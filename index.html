@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SHIFT — IK Category Intelligence OS</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23F5A623'/><text x='16' y='23' font-size='19' text-anchor='middle' fill='%2307071A' font-family='Arial Black' font-weight='900'>S</text></svg>"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Space Grotesk',sans-serif;background:#07071A;color:#E2E8F4;
+  background-image:radial-gradient(circle at 22px 22px,rgba(245,166,35,0.022) 1px,transparent 0);
+  background-size:44px 44px}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:#07071A}
+::-webkit-scrollbar-thumb{background:#F5A623;border-radius:2px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.2}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scanLine{0%{left:-60%}100%{left:160%}}
+@keyframes barFill{from{width:0}to{width:var(--w)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.d1{animation:pulse 1.3s 0s infinite ease-in-out}
+.d2{animation:pulse 1.3s .22s infinite ease-in-out}
+.d3{animation:pulse 1.3s .44s infinite ease-in-out}
+.fu{animation:fadeUp .32s ease forwards}
+.spin{animation:spin 1s linear infinite}
+button{cursor:pointer;font-family:inherit}
+button:active{transform:scale(0.97)}
+textarea{resize:none;font-family:inherit}
+textarea:focus,input:focus{outline:none}
+.pcard:hover{border-color:rgba(245,166,35,0.4)!important;background:rgba(245,166,35,0.06)!important}
+.pill:hover{border-color:rgba(245,166,35,0.45)!important;color:#F5A623!important}
+.nav-item:hover .nav-lbl{opacity:1!important}
+.nav-item:hover{background:rgba(255,255,255,0.04)!important}
+.mod-card:hover{border-color:rgba(255,255,255,0.12)!important;transform:translateY(-1px)}
+</style>
+</head>
+<body>
+<div id="root" style="height:100%"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useCallback,useMemo,useRef} = React;
+
+/* ═══ 1. CONSTANTS ═══════════════════════════════════════════ */
+const PROFILES=[
+  {id:"backend",  l:"Backend Engineer",    t:"SWE"},
+  {id:"fullstack",l:"Full Stack Engineer", t:"SWE"},
+  {id:"frontend", l:"Frontend Engineer",   t:"SWE"},
+  {id:"test",     l:"Test Engineer",       t:"SWE"},
+  {id:"android",  l:"Android Engineer",    t:"SWE"},
+  {id:"ios",      l:"iOS Engineer",        t:"SWE"},
+  {id:"ml",       l:"ML Engineer",         t:"AI"},
+  {id:"data-eng", l:"Data Engineer",       t:"DATA"},
+  {id:"em",       l:"Eng. Manager",        t:"MGR"},
+  {id:"tpm",      l:"TPM",                 t:"MGR"},
+  {id:"pm",       l:"Product Manager",     t:"MGR"},
+  {id:"ds",       l:"Data Scientist",      t:"DATA"},
+  {id:"da",       l:"Data Analyst / BA",   t:"DATA"},
+  {id:"embedded", l:"Embedded Systems",    t:"SYS"},
+  {id:"cloud",    l:"AWS Architect",       t:"SYS"},
+  {id:"sre",      l:"SRE",                 t:"SYS"},
+  {id:"security", l:"Cyber Security",      t:"SYS"},
+  {id:"ai-eng",   l:"AI Engineer ✦",       t:"AI"},
+];
+const TAG={
+  SWE: {c:"#4ECDC4",bg:"rgba(78,205,196,0.12)"},
+  AI:  {c:"#F5A623",bg:"rgba(245,166,35,0.12)"},
+  DATA:{c:"#B06BE3",bg:"rgba(176,107,227,0.12)"},
+  MGR: {c:"#FF6B6B",bg:"rgba(255,107,107,0.12)"},
+  SYS: {c:"#6B8FFF",bg:"rgba(107,143,255,0.12)"},
+};
+const IK_COURSES=[
+  {n:"GenAI + Agentic AI Lab — SWE",       tp:"AI+PREP", cats:"SWE · AI",        d:"30w"},
+  {n:"GenAI + Agentic AI Lab — TPM",       tp:"AI+PREP", cats:"MGR",              d:"30w"},
+  {n:"GenAI + Agentic AI Lab — PM",        tp:"AI+PREP", cats:"MGR",              d:"24w"},
+  {n:"GenAI + Agentic AI Lab — EM",        tp:"AI+PREP", cats:"MGR",              d:"30w"},
+  {n:"GenAI + Agentic AI Lab — All Roles", tp:"AI ONLY", cats:"ALL",              d:"3m"},
+  {n:"Frontend Engineering Masterclass",   tp:"PREP",    cats:"SWE",              d:"3m"},
+  {n:"Technical PM Masterclass",           tp:"PREP",    cats:"MGR",              d:"3m"},
+  {n:"Technical Program Mgr Masterclass",  tp:"PREP",    cats:"MGR",              d:"3m"},
+  {n:"Eng. Manager Masterclass",           tp:"PREP",    cats:"MGR",              d:"3m"},
+  {n:"Full Stack Masterclass",             tp:"PREP",    cats:"SWE",              d:"3m"},
+  {n:"Backend Engineering Masterclass",    tp:"PREP",    cats:"SWE",              d:"3m"},
+  {n:"PwC Agentic AI Bootcamp",            tp:"AI ONLY", cats:"SWE · MGR · DATA", d:"12w"},
+  {n:"Flagship ML Program",               tp:"AI+PREP", cats:"AI · DATA",        d:"6m"},
+];
+const TYPE_COLOR={"AI+PREP":"#F5A623","AI ONLY":"#9B6FD4","PREP":"#4ECDC4"};
+
+const MOD={
+  home:   {c:"#F5A623",label:"HOME",         sub:"Command Center", icon:"⬡"},
+  signals:{c:"#F5A623",label:"SIGNALS",      sub:"Daily Briefing", icon:"⚡"},
+  hiring: {c:"#4ECDC4",label:"HIRING",       sub:"18 Profiles",    icon:"◈"},
+  funding:{c:"#9B6FD4",label:"FUNDING",      sub:"Startup Radar",  icon:"◎"},
+  rivals: {c:"#FF6B6B",label:"RIVALS",       sub:"Competitor Watch",icon:"◉"},
+  engine: {c:"#50D2A0",label:"LAUNCH ENGINE",sub:"Course Scorer",  icon:"▶"},
+};
+const SCAN_MODS=["signals","funding","rivals"];
+const DIMS=["Market Size","Hiring Demand","Salary Impact","Competition (10=none)","Build Ease (10=easy)"];
+const VERDICT_C={"LAUNCH NOW":"#50D2A0","TEST FIRST":"#F5A623","WATCH & WAIT":"#FF9A3C","SKIP":"#FF6B6B"};
+const QUICK_IDEAS=["AI Product Manager Bootcamp","AI TPM Certification","AI Solutions Architect","AI Security Engineer","Agentic AI for Data Scientists","AI Engineering Manager","AI Infrastructure Engineer","AI Evaluation Engineer"];
+
+/* ═══ 2. STORAGE & UTILS ══════════════════════════════════════ */
+const LS={
+  get:(k)=>{try{const v=localStorage.getItem("shift_"+k);return v?JSON.parse(v):null}catch{return null}},
+  set:(k,v)=>{try{localStorage.setItem("shift_"+k,JSON.stringify({data:v,ts:Date.now()}))}catch{}},
+  del:(k)=>{try{localStorage.removeItem("shift_"+k)}catch{}},
+};
+function timeSince(ts){
+  if(!ts)return null;
+  const m=Math.floor((Date.now()-ts)/60000);
+  if(m<1)return"just now";if(m<60)return`${m}m ago`;
+  const h=Math.floor(m/60);if(h<24)return`${h}h ago`;
+  return`${Math.floor(h/24)}d ago`;
+}
+function greet(){
+  const h=new Date().getHours();
+  if(h<12)return"Good morning";if(h<17)return"Good afternoon";return"Good evening";
+}
+function parseScores(text){
+  if(!text)return null;
+  const ms=text.match(/(\d+)\/10/g);
+  const tot=text.match(/(\d+)\/50/);
+  const verd=text.match(/LAUNCH NOW|TEST FIRST|WATCH & WAIT|SKIP/);
+  if(!ms||ms.length<5)return null;
+  return{scores:ms.slice(0,5).map(s=>parseInt(s)),total:tot?parseInt(tot[1]):null,verdict:verd?verd[0]:null};
+}
+
+/* ═══ 3. PROMPTS ══════════════════════════════════════════════ */
+const PROMPTS={
+  signals:()=>`Today is ${new Date().toLocaleDateString("en-IN",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}.
+
+Search for latest AI and tech career news from the past 7 days. Find:
+1. New AI job roles being created at tech companies (Google, Microsoft, Amazon, Meta, Indian unicorns)
+2. Major AI product or agent framework launches
+3. EdTech news: new course launches by upGrad, Scaler, Simplilearn, or any platform
+4. Tech hiring trends in India: which AI skills companies now require in job descriptions
+5. Enterprise or government AI adoption in India driving training demand
+
+Format as exactly 5 signals:
+SIGNAL 1: [HEADLINE IN CAPS]
+WHAT HAPPENED: [2 sentences]
+WHY IT MATTERS: [1 sentence for India career education market]
+COURSE SIGNAL: [Specific course Interview Kickstart should consider]
+---
+SIGNAL 2: through SIGNAL 5. Use real company names.`,
+
+  hiring:(p)=>`Search current job market data for "${p}" roles in India right now (2025–2026). Use LinkedIn India, Naukri, Indeed, Glassdoor, or industry reports.
+
+DEMAND: [High/Medium/Low] — [one-line reason]
+JOB VOLUME: [approx open positions in India]
+TOP 5 SKILLS: [most demanded in current JDs]
+NEW AI SKILLS ENTERING THIS ROLE: [AI/ML/agent skills now appearing in JDs]
+SALARY RANGE: ₹X — ₹Y LPA [3–8 years experience]
+TOP HIRING COMPANIES: [5 specific companies]
+TREND: [Growing/Stable/Declining] — [reason]
+COURSE OPPORTUNITY: [Specific gap Interview Kickstart should fill]`,
+
+  funding:()=>`Search AI startup funding news past 30 days. Find 6 most significant rounds, especially India operations or impact.
+
+For each:
+─── FUNDED ─────────────────────────
+COMPANY: [name]
+AMOUNT: [₹/$ amount] | STAGE: [Seed/Series A/B/C]
+BUILDING: [what they do — 1 sentence]
+ROLES THEY WILL HIRE: [4 specific job titles]
+IK COURSE SIGNAL: [what course Interview Kickstart should prepare]
+
+Include 6 companies. Real recent news only.`,
+
+  rivals:()=>`Search news past 30 days: upGrad, Scaler, Simplilearn, Great Learning, GUVI, Coursera India, Udacity India.
+Find: new AI/tech course launches, partnerships, pricing changes, celebrity faculty, aggressive marketing, MAANG prep programs.
+
+For each with news:
+─── RIVAL MOVE ─────────────────────
+COMPETITOR: [name]
+MOVE: [what they did — 2 sentences]
+THREAT LEVEL: [High/Medium/Low]
+IK COUNTER: [exactly what Interview Kickstart should do in response]
+
+For no news: "[name] — No major moves detected."
+
+OVERALL COMPETITIVE TEMPERATURE: [Hot/Warm/Calm]
+BIGGEST THREAT THIS MONTH: [competitor + why]
+IK'S BIGGEST OPEN GAP: [what competitors are exploiting]`,
+
+  engine:(idea)=>`Analyze course launch opportunity for Interview Kickstart: "${idea}"
+Context: Indian EdTech, FAANG/MAANG interview prep + Agentic AI upskilling. Market: India. Target: working tech professionals.
+Search: hiring volume in India for ${idea} skills, salary premium, Indian competitors offering this, market size, demand trend.
+
+═══ OPPORTUNITY: ${idea.toUpperCase()} ═══
+
+📊 MARKET SIZE: [X]/10
+[Reason]
+
+💼 HIRING DEMAND: [X]/10
+[Reason]
+
+💰 SALARY IMPACT: [X]/10
+[Reason]
+
+🥊 COMPETITION: [X]/10 [10=zero competition]
+[Reason]
+
+🔨 BUILD DIFFICULTY: [X]/10 [10=easy]
+[Reason]
+
+─────────────────────────────
+TOTAL LAUNCH SCORE: [X]/50
+VERDICT: LAUNCH NOW / TEST FIRST / WATCH & WAIT / SKIP
+
+POSITIONING: [How IK differentiates — 2 sentences]
+FIRST MOVE: [Single most important step — 1 sentence]
+INDIA MARKET SIZE: ₹[X] crore addressable opportunity`,
+};
+
+/* ═══ 4. SHARED UI COMPONENTS ════════════════════════════════ */
+function ScanBtn({label,onClick,isLoading,disabled,color="#F5A623"}){
+  return(
+    <button onClick={onClick} disabled={isLoading||disabled}
+      onMouseEnter={e=>{if(!isLoading&&!disabled)e.currentTarget.style.background=color+"26"}}
+      onMouseLeave={e=>{if(!isLoading&&!disabled)e.currentTarget.style.background=color+"12"}}
+      style={{display:"flex",alignItems:"center",gap:10,padding:"12px 24px",
+        background:isLoading||disabled?"#111128":color+"12",
+        border:`1px solid ${isLoading||disabled?"#252540":color}`,
+        borderRadius:8,marginBottom:22,transition:"all 0.18s",
+        opacity:disabled?0.45:1}}>
+      <span style={{width:8,height:8,borderRadius:"50%",background:color,flexShrink:0,
+        animation:isLoading?"pulse 1s infinite ease-in-out":"none"}}/>
+      <span style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:12,
+        color:isLoading||disabled?"#5A6080":color,letterSpacing:"0.1em"}}>
+        {isLoading?"SCANNING LIVE SOURCES...":label}
+      </span>
+    </button>
+  );
+}
+function LoadingBox({label}){
+  return(
+    <div style={{padding:"30px 28px",background:"#0D0D24",border:"1px solid #1E1E3F",
+      borderRadius:10,textAlign:"center",marginBottom:20,position:"relative",overflow:"hidden"}}>
+      <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:"#1E1E3F"}}>
+        <div style={{position:"absolute",top:0,height:"100%",width:"55%",
+          background:"linear-gradient(90deg,transparent,#F5A623,transparent)",
+          animation:"scanLine 1.4s linear infinite"}}/>
+      </div>
+      <div style={{display:"flex",justifyContent:"center",gap:7,marginBottom:14}}>
+        <div className="d1" style={{width:9,height:9,borderRadius:"50%",background:"#F5A623"}}/>
+        <div className="d2" style={{width:9,height:9,borderRadius:"50%",background:"#F5A623"}}/>
+        <div className="d3" style={{width:9,height:9,borderRadius:"50%",background:"#F5A623"}}/>
+      </div>
+      <div style={{fontSize:13,color:"#F5A623",fontFamily:"'Space Mono',monospace",letterSpacing:"0.06em"}}>{label}</div>
+      <div style={{fontSize:11,color:"#3A3A55",marginTop:7,fontFamily:"'Space Mono',monospace"}}>
+        searching live sources · analyzing · synthesizing
+      </div>
+    </div>
+  );
+}
+function IntelBox({text,ts}){
+  const [copied,setCopied]=useState(false);
+  const copy=()=>{navigator.clipboard.writeText(text).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000)})};
+  return(
+    <div className="fu" style={{background:"#0D0D24",border:"1px solid #1E1E3F",borderLeft:"3px solid #F5A623",borderRadius:10,padding:"20px 22px",marginBottom:20}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+        <div style={{display:"flex",alignItems:"center",gap:9}}>
+          <div style={{width:7,height:7,borderRadius:"50%",background:"#4ECDC4"}}/>
+          <span style={{fontSize:11,color:"#4ECDC4",fontFamily:"'Space Mono',monospace",letterSpacing:"0.1em"}}>
+            INTELLIGENCE REPORT{ts?` · ${timeSince(ts)}`:""}
+          </span>
+        </div>
+        <button onClick={copy} style={{padding:"4px 11px",background:"rgba(245,166,35,0.07)",
+          border:"1px solid rgba(245,166,35,0.25)",borderRadius:5,fontSize:11,
+          color:copied?"#4ECDC4":"#F5A623",fontFamily:"'Space Mono',monospace",fontWeight:700,
+          letterSpacing:"0.05em",transition:"all 0.2s"}}>
+          {copied?"COPIED ✓":"COPY"}
+        </button>
+      </div>
+      <pre style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:13.5,lineHeight:1.82,
+        color:"#D0D8EE",whiteSpace:"pre-wrap",wordBreak:"break-word"}}>{text}</pre>
+    </div>
+  );
+}
+function EmptyHint({msg}){
+  return(
+    <div style={{padding:"28px 20px",background:"#0D0D24",border:"1px dashed #1E1E3F",
+      borderRadius:10,textAlign:"center",color:"#2E2E4A",fontSize:13,fontFamily:"'Space Mono',monospace"}}>
+      {msg}
+    </div>
+  );
+}
+function ScoreBar({label,score,color}){
+  return(
+    <div style={{marginBottom:14}}>
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+        <span style={{fontSize:12,color:"#A0A8C0"}}>{label}</span>
+        <span style={{fontSize:12,fontFamily:"'Space Mono',monospace",color,fontWeight:700}}>{score}/10</span>
+      </div>
+      <div style={{background:"#1E1E3F",borderRadius:4,height:6,overflow:"hidden"}}>
+        <div style={{height:"100%",width:`${score*10}%`,background:color,borderRadius:4,
+          animation:"barFill 0.8s ease forwards",transition:"width 0.8s ease"}}/>
+      </div>
+    </div>
+  );
+}
+function ScoreCard({text,ts}){
+  const parsed=useMemo(()=>parseScores(text),[text]);
+  const vc=parsed?.verdict?VERDICT_C[parsed.verdict]||"#F5A623":"#F5A623";
+  return(
+    <div className="fu">
+      {parsed&&(
+        <div style={{background:"#0D0D24",border:`1px solid ${vc}33`,borderRadius:10,padding:"22px",marginBottom:16}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
+            <div>
+              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:20,color:vc,marginBottom:2}}>
+                {parsed.verdict||"ANALYSIS COMPLETE"}
+              </div>
+              {parsed.total&&(
+                <div style={{fontSize:12,color:"#5A6080",fontFamily:"'Space Mono',monospace"}}>
+                  LAUNCH SCORE: {parsed.total}/50
+                </div>
+              )}
+            </div>
+            <div style={{padding:"8px 18px",background:vc+"1A",border:`1px solid ${vc}44`,borderRadius:8,
+              fontFamily:"'Space Mono',monospace",fontSize:22,fontWeight:700,color:vc}}>
+              {parsed.total}/50
+            </div>
+          </div>
+          {DIMS.map((d,i)=>parsed.scores[i]!=null&&(
+            <ScoreBar key={i} label={d} score={parsed.scores[i]} color={vc}/>
+          ))}
+        </div>
+      )}
+      <IntelBox text={text} ts={ts}/>
+    </div>
+  );
+}
+
+/* ═══ 5. MAIN COMPONENT ══════════════════════════════════════ */
+function SHIFT(){
+  const [tab,setTab]=useState("home");
+  const [ld,setLd]=useState({});
+  const [cache,setCache]=useState({});
+  const [prof,setProf]=useState(null);
+  const [catF,setCatF]=useState("ALL");
+  const [idea,setIdea]=useState("");
+  const [now,setNow]=useState(new Date());
+  const [fullSc,setFullSc]=useState(false);
+  const [scanCount,setScanCount]=useState(0);
+
+  // load from localStorage on mount
+  useEffect(()=>{
+    const loaded={};
+    ["signals","funding","rivals"].forEach(k=>{const v=LS.get(k);if(v)loaded[k]=v;});
+    PROFILES.forEach(p=>{const v=LS.get("h_"+p.id);if(v)loaded["h_"+p.id]=v;});
+    const eh=LS.get("engine_history");if(eh)loaded.engine_history=eh.data;
+    const sc=LS.get("scan_count");if(sc)setScanCount(sc.data||0);
+    setCache(loaded);
+  },[]);
+
+  // clock
+  useEffect(()=>{const t=setInterval(()=>setNow(new Date()),1000);return()=>clearInterval(t);},[]);
+
+  const scan=useCallback(async(prompt,key)=>{
+    setLd(p=>({...p,[key]:true}));
+    try{
+      const r=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+          tools:[{type:"web_search_20250305",name:"web_search"}],
+          messages:[{role:"user",content:prompt}]}),
+      });
+      const d=await r.json();
+      const txt=(d.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim();
+      const entry={data:txt,ts:Date.now()};
+      LS.set(key,txt);
+      setCache(p=>({...p,[key]:entry}));
+      const newCount=scanCount+1;
+      setScanCount(newCount);
+      LS.set("scan_count",newCount);
+    }catch(e){
+      const entry={data:`Error: ${e.message}. Please retry.`,ts:Date.now()};
+      setCache(p=>({...p,[key]:entry}));
+    }
+    setLd(p=>({...p,[key]:false}));
+  },[scanCount]);
+
+  const fullScan=useCallback(async()=>{
+    setFullSc(true);
+    await Promise.all(SCAN_MODS.map(k=>scan(PROMPTS[k](),k)));
+    setFullSc(false);
+  },[scan]);
+
+  const addEngineHistory=useCallback((ideaText,resultText)=>{
+    const entry={idea:ideaText,result:resultText,ts:Date.now()};
+    const hist=cache.engine_history||[];
+    const updated=[entry,...hist].slice(0,5);
+    LS.set("engine_history",updated);
+    setCache(p=>({...p,engine_history:updated}));
+  },[cache.engine_history]);
+
+  const timeStr=now.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  const dateStr=now.toLocaleDateString("en-IN",{weekday:"short",day:"2-digit",month:"short",year:"numeric"});
+
+  /* ── HOME TAB ─────────────────────────────────────────── */
+  const renderHome=()=>{
+    const scannedProfiles=PROFILES.filter(p=>cache["h_"+p.id]).length;
+    return(
+      <div>
+        {/* Greeting */}
+        <div style={{marginBottom:28}}>
+          <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:26,color:"#E2E8F4",marginBottom:4}}>
+            {greet()}, Category Architect
+          </div>
+          <div style={{fontSize:13,color:"#5A6080",fontFamily:"'Space Mono',monospace"}}>
+            {dateStr} · {PROFILES.length} profiles tracked · {scannedProfiles} hiring scans cached · {scanCount} total scans
+          </div>
+        </div>
+
+        {/* Full scan button */}
+        <div style={{background:"#0D0D24",border:"1px solid #1E1E3F",borderRadius:10,padding:"20px 22px",marginBottom:28}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:16}}>
+            <div>
+              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:16,color:"#E2E8F4",marginBottom:4}}>
+                Full Intelligence Scan
+              </div>
+              <div style={{fontSize:12,color:"#5A6080"}}>
+                Runs SIGNALS + FUNDING + RIVALS simultaneously in ~20 seconds
+              </div>
+            </div>
+            <button onClick={fullScan} disabled={fullSc}
+              onMouseEnter={e=>{if(!fullSc)e.currentTarget.style.background="rgba(245,166,35,0.18)"}}
+              onMouseLeave={e=>{if(!fullSc)e.currentTarget.style.background="rgba(245,166,35,0.09)"}}
+              style={{display:"flex",alignItems:"center",gap:10,padding:"12px 24px",
+                background:fullSc?"#111128":"rgba(245,166,35,0.09)",
+                border:`1px solid ${fullSc?"#252540":"#F5A623"}`,
+                borderRadius:8,transition:"all 0.18s",flexShrink:0}}>
+              {fullSc?<span className="spin" style={{fontSize:14}}>◌</span>
+                :<span style={{color:"#F5A623",fontSize:13}}>⚡</span>}
+              <span style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:12,
+                color:fullSc?"#5A6080":"#F5A623",letterSpacing:"0.08em"}}>
+                {fullSc?"SCANNING ALL SOURCES...":"RUN FULL SCAN"}
+              </span>
+            </button>
+          </div>
+          {fullSc&&(
+            <div style={{display:"flex",gap:24,marginTop:18,flexWrap:"wrap"}}>
+              {SCAN_MODS.map(k=>(
+                <div key={k} style={{display:"flex",alignItems:"center",gap:8}}>
+                  <div style={{width:7,height:7,borderRadius:"50%",background:"#F5A623",
+                    animation:ld[k]?"pulse 1s infinite":"none",
+                    opacity:cache[k]&&!ld[k]?0.4:1}}/>
+                  <span style={{fontSize:11,fontFamily:"'Space Mono',monospace",
+                    color:ld[k]?"#F5A623":cache[k]?"#4ECDC4":"#3A3A55",letterSpacing:"0.07em"}}>
+                    {k.toUpperCase()} {cache[k]&&!ld[k]?"✓":""}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Module status cards */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:12,marginBottom:32}}>
+          {Object.entries(MOD).filter(([k])=>k!=="home").map(([key,mod])=>{
+            const isHiring=key==="hiring";
+            const cacheEntry=isHiring?null:cache[key];
+            const freshness=cacheEntry?.ts?timeSince(cacheEntry.ts):null;
+            const preview=cacheEntry?.data?cacheEntry.data.substring(0,90)+"...":null;
+            return(
+              <div key={key} className="mod-card" onClick={()=>setTab(key)}
+                style={{background:"#0D0D24",border:"1px solid #1E1E3F",borderRadius:10,
+                  padding:"18px 18px",cursor:"pointer",transition:"all 0.18s",
+                  borderTop:`2px solid ${mod.c}44`}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+                  <div style={{display:"flex",alignItems:"center",gap:10}}>
+                    <span style={{fontSize:18,color:mod.c}}>{mod.icon}</span>
+                    <div>
+                      <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:13,
+                        color:mod.c,letterSpacing:"0.08em"}}>{mod.label}</div>
+                      <div style={{fontSize:10,color:"#3A3A55",fontFamily:"'Space Mono',monospace"}}>{mod.sub}</div>
+                    </div>
+                  </div>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    <div style={{width:7,height:7,borderRadius:"50%",
+                      background:isHiring?(scannedProfiles>0?"#4ECDC4":"#3A3A55")
+                        :(freshness?"#50D2A0":"#3A3A55"),
+                      animation:ld[key]?"pulse 1s infinite":"none"}}/>
+                    <span style={{fontSize:10,fontFamily:"'Space Mono',monospace",
+                      color:isHiring?(scannedProfiles>0?"#4ECDC4":"#3A3A55")
+                        :(freshness?"#50D2A0":"#3A3A55")}}>
+                      {ld[key]?"SCANNING":isHiring?(scannedProfiles>0?`${scannedProfiles} scanned`:"NEVER SCANNED")
+                        :(freshness||"NEVER SCANNED")}
+                    </span>
+                  </div>
+                </div>
+                <div style={{fontSize:12,color:"#5A6080",lineHeight:1.6,marginBottom:12,minHeight:36}}>
+                  {isHiring?`${scannedProfiles} of ${PROFILES.length} profiles have cached intelligence`
+                    :(preview||"No scan data yet. Click to run scan.")}
+                </div>
+                <div style={{fontSize:11,color:mod.c,fontFamily:"'Space Mono',monospace",letterSpacing:"0.08em"}}>
+                  → OPEN {mod.label}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* IK Course Intelligence Map */}
+        <div style={{background:"#0D0D24",border:"1px solid #1E1E3F",borderRadius:10,padding:"22px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:18}}>
+            <div style={{width:7,height:7,borderRadius:"50%",background:"#F5A623"}}/>
+            <span style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,color:"#E2E8F4",letterSpacing:"0.05em"}}>
+              IK COURSE INTELLIGENCE MAP
+            </span>
+            <span style={{fontSize:10,color:"#3A3A55",fontFamily:"'Space Mono',monospace"}}>
+              13 courses · 18 profiles
+            </span>
+          </div>
+          {/* Legend */}
+          <div style={{display:"flex",gap:14,marginBottom:16,flexWrap:"wrap"}}>
+            {Object.entries(TYPE_COLOR).map(([tp,c])=>(
+              <div key={tp} style={{display:"flex",alignItems:"center",gap:6}}>
+                <div style={{width:10,height:10,borderRadius:3,background:c+"33",border:`1px solid ${c}66`}}/>
+                <span style={{fontSize:11,color:"#7A82A0",fontFamily:"'Space Mono',monospace"}}>{tp}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{overflowX:"auto"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
+              <thead>
+                <tr style={{borderBottom:"1px solid #1E1E3F"}}>
+                  {["#","Course Name","Type","Profiles Covered","Duration"].map(h=>(
+                    <th key={h} style={{textAlign:"left",padding:"8px 12px",
+                      color:"#5A6080",fontFamily:"'Space Mono',monospace",
+                      fontSize:10,letterSpacing:"0.08em",fontWeight:700,whiteSpace:"nowrap"}}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {IK_COURSES.map((c,i)=>{
+                  const tc=TYPE_COLOR[c.tp]||"#F5A623";
+                  return(
+                    <tr key={i} style={{borderBottom:"1px solid #0F0F28"}}
+                      onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.02)"}
+                      onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                      <td style={{padding:"10px 12px",color:"#3A3A55",fontFamily:"'Space Mono',monospace"}}>{i+1}</td>
+                      <td style={{padding:"10px 12px",color:"#D0D8EE",fontWeight:500}}>{c.n}</td>
+                      <td style={{padding:"10px 12px"}}>
+                        <span style={{fontSize:10,fontWeight:700,padding:"3px 8px",borderRadius:5,
+                          background:tc+"1A",color:tc,fontFamily:"'Space Mono',monospace",
+                          letterSpacing:"0.05em",whiteSpace:"nowrap"}}>
+                          {c.tp}
+                        </span>
+                      </td>
+                      <td style={{padding:"10px 12px",color:"#7A82A0",fontFamily:"'Space Mono',monospace",fontSize:11}}>
+                        {c.cats}
+                      </td>
+                      <td style={{padding:"10px 12px",color:"#5A6080",fontFamily:"'Space Mono',monospace"}}>{c.d}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div style={{marginTop:16,padding:"12px 14px",background:"rgba(245,166,35,0.04)",
+            border:"1px solid rgba(245,166,35,0.12)",borderRadius:8,fontSize:12,color:"#7A82A0",lineHeight:1.6}}>
+            ⚠ <strong style={{color:"#F5A623"}}>Gaps detected:</strong> No standalone courses for Embedded Systems, SRE, Cyber Security, Android, or iOS. 
+            DATA category has limited coverage. Use LAUNCH ENGINE to score opportunity for any gap.
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  /* ── SIGNALS TAB ──────────────────────────────────────── */
+  const renderSignals=()=>(
+    <div>
+      <div style={{display:"flex",gap:10,flexWrap:"wrap",marginBottom:22}}>
+        {[["S","Signals"],["H","Hiring"],["I","Intelligence"],["F","Funding"],["T","Trends"]].map(([l,w])=>(
+          <div key={l} style={{background:"#0D0D24",border:"1px solid #1E1E3F",borderRadius:8,
+            padding:"8px 15px",display:"flex",alignItems:"center",gap:10}}>
+            <span style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:20,color:"#F5A623"}}>{l}</span>
+            <span style={{fontSize:12,color:"#A0A8C0",fontWeight:500}}>{w}</span>
+          </div>
+        ))}
+      </div>
+      <p style={{color:"#7A82A0",fontSize:13.5,lineHeight:1.78,marginBottom:22}}>
+        Daily intelligence briefing. SHIFT scans live AI industry news, new job role trends, EdTech moves, 
+        and hiring signals — surfaces what matters for IK's course strategy. Run every morning.
+      </p>
+      <ScanBtn label="RUN MORNING BRIEFING" onClick={()=>scan(PROMPTS.signals(),"signals")} isLoading={ld.signals}/>
+      {ld.signals&&<LoadingBox label="Scanning live intelligence sources..."/>}
+      {!ld.signals&&cache.signals&&<IntelBox text={cache.signals.data} ts={cache.signals.ts}/>}
+      {!ld.signals&&!cache.signals&&<EmptyHint msg="↑  Hit 'Run Morning Briefing' to get today's intelligence"/>}
+    </div>
+  );
+
+  /* ── HIRING TAB ──────────────────────────────────────── */
+  const renderHiring=()=>{
+    const cats=["ALL","SWE","AI","DATA","MGR","SYS"];
+    const filtered=catF==="ALL"?PROFILES:PROFILES.filter(p=>p.t===catF);
+    const scannedKey=prof?"h_"+prof:null;
+    return(
+      <div>
+        <p style={{color:"#7A82A0",fontSize:13.5,lineHeight:1.78,marginBottom:18}}>
+          Select any of the 18 profiles IK serves. SHIFT scans live job market data — demand, top skills, 
+          new AI additions, salary, and the specific course opportunity for IK.
+        </p>
+        {/* Category filter */}
+        <div style={{display:"flex",gap:8,marginBottom:18,flexWrap:"wrap"}}>
+          {cats.map(c=>{
+            const active=catF===c;
+            const tc=c==="ALL"?{c:"#E2E8F4"}:TAG[c]||{c:"#E2E8F4"};
+            return(
+              <button key={c} onClick={()=>setCatF(c)}
+                style={{padding:"6px 14px",background:active?(c==="ALL"?"rgba(245,166,35,0.12)":tc.c+"1A"):"#0D0D24",
+                  border:`1px solid ${active?(c==="ALL"?"#F5A623":tc.c):"#1E1E3F"}`,
+                  borderRadius:20,fontSize:11,fontWeight:600,
+                  color:active?(c==="ALL"?"#F5A623":tc.c):"#5A6080",
+                  transition:"all 0.15s",fontFamily:"'Space Mono',monospace",letterSpacing:"0.05em"}}>
+                {c}
+              </button>
+            );
+          })}
+        </div>
+        {/* Profile grid */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(144px,1fr))",gap:8,marginBottom:20}}>
+          {filtered.map(p=>{
+            const tc=TAG[p.t];const sel=prof===p.id;
+            const hasCache=!!cache["h_"+p.id];
+            return(
+              <button key={p.id} onClick={()=>setProf(p.id)} className="pcard"
+                style={{background:sel?"rgba(245,166,35,0.08)":"#0D0D24",
+                  border:`1px solid ${sel?"#F5A623":"#1E1E3F"}`,
+                  borderRadius:8,padding:"11px 12px",textAlign:"left",transition:"all 0.15s",
+                  position:"relative"}}>
+                {hasCache&&<div style={{position:"absolute",top:7,right:8,width:6,height:6,
+                  borderRadius:"50%",background:"#50D2A0"}}/>}
+                <div style={{fontSize:11,fontWeight:600,color:sel?"#F5A623":"#D0D8EE",
+                  marginBottom:7,lineHeight:1.3,paddingRight:10}}>{p.l}</div>
+                <span style={{fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:4,
+                  background:tc.bg,color:tc.c,fontFamily:"'Space Mono',monospace",letterSpacing:"0.05em"}}>
+                  {p.t}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        {prof?(
+          <>
+            <div style={{padding:"10px 16px",background:"rgba(245,166,35,0.05)",
+              border:"1px solid rgba(245,166,35,0.2)",borderRadius:8,marginBottom:16,
+              display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <span style={{color:"#F5A623",fontSize:11,fontWeight:700,
+                fontFamily:"'Space Mono',monospace",letterSpacing:"0.08em"}}>
+                SELECTED → {PROFILES.find(p=>p.id===prof)?.l}
+              </span>
+              {cache[scannedKey]&&(
+                <span style={{fontSize:10,color:"#50D2A0",fontFamily:"'Space Mono',monospace"}}>
+                  cached {timeSince(cache[scannedKey].ts)}
+                </span>
+              )}
+            </div>
+            <ScanBtn
+              label={`SCAN: ${(PROFILES.find(p=>p.id===prof)?.l||"").toUpperCase()}`}
+              onClick={()=>{const pl=PROFILES.find(p=>p.id===prof)?.l;scan(PROMPTS.hiring(pl),"h_"+prof);}}
+              isLoading={ld["h_"+prof]} color="#4ECDC4"/>
+            {ld["h_"+prof]&&<LoadingBox label={`Scanning job market for ${PROFILES.find(p=>p.id===prof)?.l}...`}/>}
+            {!ld["h_"+prof]&&cache[scannedKey]&&<IntelBox text={cache[scannedKey].data} ts={cache[scannedKey].ts}/>}
+          </>
+        ):(
+          <EmptyHint msg="↑  Select a profile above to scan its job market intelligence"/>
+        )}
+      </div>
+    );
+  };
+
+  /* ── FUNDING TAB ──────────────────────────────────────── */
+  const renderFunding=()=>(
+    <div>
+      <p style={{color:"#7A82A0",fontSize:13.5,lineHeight:1.78,marginBottom:22}}>
+        Every funded AI company is a future hiring machine. SHIFT scans the latest funding rounds, 
+        extracts the roles they'll hire, and maps what courses IK should have ready before the wave hits.
+      </p>
+      <ScanBtn label="SCAN FUNDING RADAR" onClick={()=>scan(PROMPTS.funding(),"funding")} 
+        isLoading={ld.funding} color="#9B6FD4"/>
+      {ld.funding&&<LoadingBox label="Scanning global AI funding activity..."/>}
+      {!ld.funding&&cache.funding&&<IntelBox text={cache.funding.data} ts={cache.funding.ts}/>}
+      {!ld.funding&&!cache.funding&&<EmptyHint msg="↑  Hit 'Scan Funding Radar' to see who just got funded and what roles they'll hire"/>}
+    </div>
+  );
+
+  /* ── RIVALS TAB ──────────────────────────────────────── */
+  const renderRivals=()=>(
+    <div>
+      <p style={{color:"#7A82A0",fontSize:13.5,lineHeight:1.78,marginBottom:18}}>
+        Know what competitors launch before it affects IK's position. SHIFT watches 7 platforms
+        and gives you exact counter-moves for each.
+      </p>
+      <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:22}}>
+        {["upGrad","Scaler","Simplilearn","Great Learning","GUVI","Coursera India","Udacity"].map(c=>(
+          <div key={c} style={{padding:"6px 13px",background:"#0D0D24",border:"1px solid #1E1E3F",
+            borderRadius:20,fontSize:11,color:"#7A82A0",fontWeight:500}}>{c}</div>
+        ))}
+      </div>
+      <ScanBtn label="SCAN COMPETITOR MOVES" onClick={()=>scan(PROMPTS.rivals(),"rivals")} 
+        isLoading={ld.rivals} color="#FF6B6B"/>
+      {ld.rivals&&<LoadingBox label="Scanning competitor activity across 7 platforms..."/>}
+      {!ld.rivals&&cache.rivals&&<IntelBox text={cache.rivals.data} ts={cache.rivals.ts}/>}
+      {!ld.rivals&&!cache.rivals&&<EmptyHint msg="↑  Hit 'Scan Competitor Moves' to see what rivals launched this month"/>}
+    </div>
+  );
+
+  /* ── ENGINE TAB ──────────────────────────────────────── */
+  const renderEngine=()=>{
+    const engineKey="engine_latest";
+    return(
+      <div>
+        <p style={{color:"#7A82A0",fontSize:13.5,lineHeight:1.78,marginBottom:20}}>
+          Enter any course idea. SHIFT scores it across 5 dimensions then gives you a launch verdict, 
+          positioning angle, and single most important first move. Results are visualized and saved.
+        </p>
+        <div style={{marginBottom:16}}>
+          <label style={{display:"block",fontSize:11,color:"#50D2A0",fontWeight:700,marginBottom:7,
+            textTransform:"uppercase",letterSpacing:"0.1em",fontFamily:"'Space Mono',monospace"}}>
+            Course Idea
+          </label>
+          <textarea value={idea} onChange={e=>setIdea(e.target.value)} rows={3}
+            placeholder="e.g.  AI Product Manager Bootcamp,  Agentic AI for TPMs,  AI Security Engineer..."
+            onFocus={e=>e.target.style.borderColor="rgba(80,210,160,0.5)"}
+            onBlur={e=>e.target.style.borderColor="#1E1E3F"}
+            style={{width:"100%",background:"#0D0D24",border:"1px solid #1E1E3F",borderRadius:8,
+              padding:"13px 15px",color:"#E2E8F4",fontSize:13.5,lineHeight:1.6,
+              transition:"border-color 0.2s"}}/>
+        </div>
+        <div style={{marginBottom:20}}>
+          <div style={{fontSize:10,color:"#3A3A55",marginBottom:8,fontFamily:"'Space Mono',monospace",letterSpacing:"0.1em"}}>
+            QUICK IDEAS →
+          </div>
+          <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+            {QUICK_IDEAS.map(q=>(
+              <button key={q} onClick={()=>setIdea(q)} className="pill"
+                style={{padding:"5px 12px",background:"#0D0D24",border:"1px solid #1E1E3F",
+                  borderRadius:20,fontSize:11,color:"#7A82A0",transition:"all 0.15s"}}>
+                {q}
+              </button>
+            ))}
+          </div>
+        </div>
+        <ScanBtn label="SCORE THIS OPPORTUNITY"
+          onClick={()=>{
+            if(!idea.trim())return;
+            const key="engine_latest";
+            scan(PROMPTS.engine(idea.trim()),key).then(()=>{
+              const entry=cache[key];
+              if(entry)addEngineHistory(idea.trim(),entry.data);
+            });
+          }}
+          isLoading={ld.engine_latest} disabled={!idea.trim()} color="#50D2A0"/>
+        {ld.engine_latest&&<LoadingBox label="Scoring market opportunity..."/>}
+        {!ld.engine_latest&&cache.engine_latest&&(
+          <ScoreCard text={cache.engine_latest.data} ts={cache.engine_latest.ts}/>
+        )}
+        {!ld.engine_latest&&!cache.engine_latest&&<EmptyHint msg="↑  Enter a course idea above and hit 'Score This Opportunity'"/>}
+
+        {/* Idea History */}
+        {cache.engine_history?.length>0&&(
+          <div style={{marginTop:28}}>
+            <div style={{fontSize:11,color:"#3A3A55",marginBottom:12,fontFamily:"'Space Mono',monospace",
+              letterSpacing:"0.1em"}}>SCORED HISTORY ({cache.engine_history.length})</div>
+            {cache.engine_history.map((h,i)=>{
+              const p=parseScores(h.result);
+              const vc=p?.verdict?VERDICT_C[p.verdict]||"#F5A623":"#F5A623";
+              return(
+                <div key={i} onClick={()=>{setIdea(h.idea);setCache(prev=>({...prev,engine_latest:{data:h.result,ts:h.ts}}))}}
+                  style={{padding:"12px 16px",background:"#0D0D24",border:"1px solid #1E1E3F",
+                    borderRadius:8,marginBottom:8,cursor:"pointer",transition:"all 0.15s",
+                    display:"flex",alignItems:"center",justifyContent:"space-between"}}
+                  onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(80,210,160,0.3)"}
+                  onMouseLeave={e=>e.currentTarget.style.borderColor="#1E1E3F"}>
+                  <div>
+                    <div style={{fontSize:13,fontWeight:600,color:"#D0D8EE",marginBottom:3}}>{h.idea}</div>
+                    <div style={{fontSize:10,color:"#5A6080",fontFamily:"'Space Mono',monospace"}}>{timeSince(h.ts)}</div>
+                  </div>
+                  {p&&(
+                    <div style={{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+                      <span style={{fontSize:12,fontFamily:"'Space Mono',monospace",color:vc,fontWeight:700}}>
+                        {p.total}/50
+                      </span>
+                      <span style={{fontSize:10,padding:"3px 9px",borderRadius:5,
+                        background:vc+"1A",color:vc,fontFamily:"'Space Mono',monospace",
+                        fontWeight:700,letterSpacing:"0.05em",whiteSpace:"nowrap"}}>
+                        {p.verdict||"SCORED"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  /* ── LAYOUT ──────────────────────────────────────────── */
+  const curMod=MOD[tab];
+  return(
+    <div style={{display:"flex",flexDirection:"column",height:"100vh",overflow:"hidden"}}>
+      {/* HEADER */}
+      <div style={{height:54,flexShrink:0,padding:"0 24px",borderBottom:"1px solid #1A1A35",
+        display:"flex",alignItems:"center",justifyContent:"space-between",
+        background:"rgba(7,7,26,0.98)",zIndex:200,
+        boxShadow:"0 1px 0 0 rgba(245,166,35,0.07)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:14}}>
+          <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:26,
+            color:"#F5A623",letterSpacing:"-0.02em",lineHeight:1}}>SHIFT</div>
+          <div style={{width:1,height:26,background:"#1A1A35"}}/>
+          <div>
+            <div style={{fontSize:10,color:"#3A3A55",fontFamily:"'Space Mono',monospace",letterSpacing:"0.1em"}}>
+              SKILLS · HIRING · INTELLIGENCE · FUNDING · TRENDS
+            </div>
+            <div style={{fontSize:10,color:"#1E1E2E",fontFamily:"'Space Mono',monospace"}}>
+              Interview Kickstart · Category Intelligence OS
+            </div>
+          </div>
+        </div>
+        <div style={{textAlign:"right"}}>
+          <div style={{fontFamily:"'Space Mono',monospace",fontSize:12,color:"#F5A623",letterSpacing:"0.05em"}}>{timeStr}</div>
+          <div style={{fontFamily:"'Space Mono',monospace",fontSize:10,color:"#3A3A55",marginTop:1}}>{dateStr}</div>
+        </div>
+      </div>
+
+      {/* BODY */}
+      <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+        {/* SIDEBAR */}
+        <div style={{width:195,flexShrink:0,background:"#0A0A1E",borderRight:"1px solid #1A1A35",
+          display:"flex",flexDirection:"column",overflowY:"auto"}}>
+          <div style={{flex:1,padding:"12px 0"}}>
+            {Object.entries(MOD).map(([key,mod])=>{
+              const active=tab===key;
+              return(
+                <button key={key} onClick={()=>setTab(key)} className="nav-item"
+                  style={{width:"100%",padding:"11px 18px",background:active?mod.c+"14":"transparent",
+                    border:"none",borderLeft:`3px solid ${active?mod.c:"transparent"}`,
+                    textAlign:"left",transition:"all 0.15s",display:"block"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:10}}>
+                    <span style={{fontSize:15,opacity:active?1:0.5,color:mod.c}}>{mod.icon}</span>
+                    <div>
+                      <div className="nav-lbl" style={{fontFamily:"'Syne',sans-serif",fontWeight:700,
+                        fontSize:11,color:active?mod.c:"#4A4A65",letterSpacing:"0.08em",
+                        opacity:active?1:0.8,transition:"opacity 0.15s"}}>
+                        {mod.label}
+                      </div>
+                      <div style={{fontSize:9,color:active?"#5A6080":"#252535",
+                        fontFamily:"'Space Mono',monospace"}}>
+                        {mod.sub}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          {/* Sidebar footer */}
+          <div style={{padding:"14px 18px",borderTop:"1px solid #1A1A35"}}>
+            <div style={{fontSize:10,color:"#2E2E4E",fontFamily:"'Space Mono',monospace",marginBottom:4}}>
+              TOTAL SCANS
+            </div>
+            <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:22,color:"#F5A623"}}>
+              {scanCount}
+            </div>
+            <div style={{fontSize:9,color:"#2E2E4E",fontFamily:"'Space Mono',monospace",marginTop:6}}>
+              v1.0 · SHIFT by IK
+            </div>
+          </div>
+        </div>
+
+        {/* MAIN CONTENT */}
+        <div style={{flex:1,overflowY:"auto",padding:"28px 32px 64px"}}>
+          <div style={{maxWidth:820,margin:"0 auto"}}>
+            {tab!=="home"&&(
+              <div style={{marginBottom:24}}>
+                <h1 style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:22,
+                  color:curMod?.c||"#E2E8F4",marginBottom:3,letterSpacing:"-0.01em"}}>
+                  {curMod?.label}
+                </h1>
+                <div style={{fontSize:10,color:"#3A3A55",fontFamily:"'Space Mono',monospace",letterSpacing:"0.1em"}}>
+                  {curMod?.sub}
+                </div>
+              </div>
+            )}
+            {tab==="home"    && renderHome()}
+            {tab==="signals" && renderSignals()}
+            {tab==="hiring"  && renderHiring()}
+            {tab==="funding" && renderFunding()}
+            {tab==="rivals"  && renderRivals()}
+            {tab==="engine"  && renderEngine()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<SHIFT/>,document.getElementById("root"));
+</script>
+</body>
+</html>

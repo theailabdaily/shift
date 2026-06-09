@@ -173,64 +173,49 @@ function greet(){const h=new Date().getHours();if(h<12)return"Good morning";if(h
 function parseScores(txt){if(!txt)return null;const ms=txt.match(/(\d+)\/10/g);const tot=txt.match(/(\d+)\/50/);const verd=txt.match(/LAUNCH NOW|TEST FIRST|WATCH & WAIT|SKIP/);if(!ms||ms.length<5)return null;return{scores:ms.slice(0,5).map(s=>parseInt(s)),total:tot?parseInt(tot[1]):null,verdict:verd?verd[0]:null};}
 /* ── PROMPTS ────────────────────────────────────────────────────────────────── */
 const PROMPTS={
-  signals:()=>`Today is ${new Date().toLocaleDateString("en-IN",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}.
-Search for latest AI and tech career news from past 7 days. Find:
-1. New AI job roles created at tech companies (Google,Microsoft,Amazon,Meta,Indian unicorns)
-2. Major AI product/agent framework launches
-3. EdTech news: new courses by upGrad,Scaler,Simplilearn or any platform
-4. Tech hiring trends India: which AI skills companies now require
-5. Enterprise/government AI adoption in India driving training demand
-Format as 5 signals:
-SIGNAL 1: [HEADLINE IN CAPS]
-WHAT HAPPENED: [2 sentences]
-WHY IT MATTERS: [1 sentence for India career education]
-COURSE SIGNAL: [Course IK should consider]
+  signals:()=>`Search AI+tech+India news last 7 days. Return 4 signals, this format:
+SIGNAL [N]: [HEADLINE]
+WHAT: [1 sentence]
+IK SIGNAL: [course opportunity]
 ---
-SIGNAL 2-5: same format. Use real company names.`,
-  rivals_refresh:()=>`Search for news past 30 days about: upGrad,Scaler,Simplilearn,Great Learning,GUVI,Coursera India,Coding Ninjas,Masai School,Newton School,Emeritus.
-Find: new AI/tech course launches,pricing changes,partnerships,marketing,MAANG prep programs,funding.
-For each with notable news:
+Topics: AI job roles India, EdTech launches, hiring trends, AI frameworks.`,
+  rivals_refresh:()=>`Search for EdTech India news last 30 days. Focus on: Scaler, Coding Ninjas, upGrad, Simplilearn, Coursera India.
+For each:
 COMPETITOR: [name]
-MOVE: [what they did 2 sentences]
-THREAT TO IK: [High/Medium/Low] — [why]
-IK COUNTER: [specific action IK should take]
-For no news: "[name] — No major moves detected."
-End: BIGGEST THREAT THIS MONTH + IK'S BIGGEST OPEN GAP`,
-  hiring:(p)=>`Search current job market data for "${p}" roles in India 2025-2026. Use LinkedIn India,Naukri,Indeed,Glassdoor.
-DEMAND: [High/Medium/Low] — [reason]
-JOB VOLUME: [approx open positions India]
-TOP 5 SKILLS: [most demanded in current JDs]
-NEW AI SKILLS IN THIS ROLE: [AI/ML/agent skills now in JDs]
-SALARY RANGE: Rs X-Y LPA [3-8 years India]
-TOP HIRING COMPANIES: [5 specific companies]
-TREND: [Growing/Stable/Declining] — [reason]
-COURSE OPPORTUNITY: [Specific gap IK should fill]`,
-  engine:(idea)=>`Analyze course launch opportunity for Interview Kickstart: "${idea}"
-IK: Indian EdTech, FAANG/MAANG interview prep + Agentic AI. Market: India. Target: experienced tech professionals 3-10 yrs. Premium Rs 1.5-8L pricing.
-Search: Indian job postings for ${idea} skills,salary premium,Indian EdTech competitors offering this,market size,demand trend.
-=== OPPORTUNITY: ${idea.toUpperCase()} ===
-Market Size: [X]/10 [Reason]
-Hiring Demand: [X]/10 [Reason]
-Salary Impact: [X]/10 [Reason]
-Competition: [X]/10 [10=no competition] [Reason]
-Build Difficulty: [X]/10 [10=easy] [Reason]
+MOVE: [1 sentence]
+THREAT: [High/Medium/Low]
+IK COUNTER: [1 sentence]
+End with: TOP THREAT + IK'S BIGGEST GAP`,
+  hiring:(p)=>`India job market for "${p}" roles right now. Search Naukri/LinkedIn India.
+DEMAND: [High/Med/Low]
+VOLUME: [open roles count]
+TOP SKILLS: [3 skills]
+AI ADDITIONS: [new AI skills in JDs]
+SALARY: Rs X-Y LPA [3-8 yrs]
+TOP COS: [3 companies]
+TREND: [Growing/Stable/Declining]
+IK OPPORTUNITY: [1 sentence]`,
+  engine:(idea)=>`Score course opportunity for Interview Kickstart (India, MAANG prep + AI, Rs1.5-8L): "${idea}"
+Search: India job postings, salary, competitors.
+Market Size: [X]/10
+Hiring Demand: [X]/10
+Salary Impact: [X]/10
+Competition: [X]/10 (10=none)
+Build Ease: [X]/10
 ---
-TOTAL LAUNCH SCORE: [X]/50
+TOTAL: [X]/50
 VERDICT: LAUNCH NOW / TEST FIRST / WATCH & WAIT / SKIP
-POSITIONING: [2 sentences how IK differentiates]
-FIRST MOVE: [single most important next step]
-INDIA MARKET SIZE: Rs X crore addressable`,
+FIRST MOVE: [1 sentence]`,
   catmgr:(history,msg)=>{
     const cs=COMP.filter(c=>c.tier!=="DEFUNCT").map(c=>`${c.n}(${c.tier},${c.threat} threat,Rev:${c.rev},Fund:${c.fund},Price:${c.price})`).join("; ");
     const cats=MKT.cats.map(c=>`${c.n}:${c.cagr} CAGR,IK=${c.ik}`).join("; ");
     const courses=IK_COURSES.map(c=>`${c.n}(${c.tp},${c.d})`).join("; ");
     return{
-      system:`You are the Virtual Category Manager for Interview Kickstart (IK), India's premium MAANG interview prep + Agentic AI upskilling platform.
-IK: Alumni 27,000+ | FAANG Instructors 700+ | Avg Exp 13+ yrs | Funding $10M Blume (2024, bootstrapped profitable before) | Pricing Rs1.5-8L | PwC India partnership
-COURSES: ${courses}
-MARKET: India EdTech $7.5B(2025)->$29-33B by 2030, 28% CAGR | AI wage premium 56% (PwC) | AI job postings 11.7% India | MAANG vs services 4-10x salary | Categories: ${cats}
-COMPETITORS: ${cs}
-YOUR ROLE: Senior Category Strategy Advisor. Be specific, direct, data-driven. Reference competitor revenue/moves. Think like a P&L owner. Give actionable next steps with timelines and revenue estimates. No fluff. Always end with a concrete recommendation.`,
+      system:`You are the Category Manager for Interview Kickstart (IK) — India, MAANG interview prep + Agentic AI, Rs1.5-8L pricing, 27K alumni, 700+ FAANG instructors, $10M Blume 2024.
+Courses: ${courses}
+Market: India EdTech $7.5B→$29B by 2030 | AI wage premium 56% | Categories: ${cats}
+Competitors: ${cs}
+Be direct, P&L-focused. Give specific numbers and a concrete recommendation every time.`,
       messages:[...history,{role:"user",content:msg}]
     };
   },
@@ -345,7 +330,7 @@ function SHIFT(){
     setLd(p=>({...p,catmgr:false}));
   },[chatH]);
 
-  const fullScan=useCallback(async()=>{setFullSc(true);await Promise.all([run(PROMPTS.signals(),"signals"),run(PROMPTS.rivals_refresh(),"rivals_live")]);setFullSc(false);},[scan]);
+  const fullScan=useCallback(async()=>{setFullSc(true);await run(PROMPTS.signals(),"signals");await run(PROMPTS.rivals_refresh(),"rivals_live");setFullSc(false);},[scan]);
 
   const tsStr=now.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
   const dtStr=now.toLocaleDateString("en-IN",{weekday:"short",day:"2-digit",month:"short",year:"numeric"});

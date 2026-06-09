@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "name": "shift-ik",
+  "functions": {
+    "api/scan.js": { "memory": 512, "maxDuration": 60 }
+  }
+}

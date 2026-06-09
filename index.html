@@ -5,7 +5,7 @@
 <title>SHIFT — IK Category Intelligence OS v2</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23F5A623'/><text x='16' y='23' font-size='19' text-anchor='middle' fill='%2307071A' font-family='Arial Black' font-weight='900'>S</text></svg>"/>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ── THEME VARIABLES ─────────────────────────────────────────────────────── */
 :root {
@@ -40,7 +40,7 @@
 /* ── BASE ───────────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Space Grotesk',sans-serif;background:var(--b0);color:var(--c0);
+body{font-family:'Inter',sans-serif;background:var(--b0);color:var(--c0);
   background-image:radial-gradient(circle at 22px 22px,var(--dot) 1px,transparent 0);
   background-size:44px 44px;transition:background 0.25s,color 0.25s}
 ::-webkit-scrollbar{width:4px;height:4px}
@@ -245,7 +245,7 @@ function ScanBtn({label,onClick,isLoading,disabled,color="#F5A623"}){
       border:`1px solid ${isLoading||disabled?"var(--bdd)":color}`,
       borderRadius:8,marginBottom:18,transition:"all 0.18s",opacity:disabled?0.45:1}}>
     <span style={{width:8,height:8,borderRadius:"50%",background:color,flexShrink:0,animation:isLoading?"pulse 1s infinite ease-in-out":"none"}}/>
-    <span style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:11,color:isLoading||disabled?"var(--c4)":color,letterSpacing:"0.1em"}}>{isLoading?"SCANNING LIVE SOURCES...":label}</span>
+    <span style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:11,color:isLoading||disabled?"var(--c4)":color,letterSpacing:"0.02em"}}>{isLoading?"SCANNING LIVE SOURCES...":label}</span>
   </button>);
 }
 function LoadBox({label}){
@@ -256,8 +256,8 @@ function LoadBox({label}){
     <div style={{display:"flex",justifyContent:"center",gap:7,marginBottom:10}}>
       <div className="d1" style={{width:8,height:8,borderRadius:"50%",background:"#F5A623"}}/><div className="d2" style={{width:8,height:8,borderRadius:"50%",background:"#F5A623"}}/><div className="d3" style={{width:8,height:8,borderRadius:"50%",background:"#F5A623"}}/>
     </div>
-    <div style={{fontSize:12,color:"#F5A623",fontFamily:"'Space Mono',monospace",letterSpacing:"0.06em"}}>{label}</div>
-    <div style={{fontSize:10,color:"var(--c5)",marginTop:5,fontFamily:"'Space Mono',monospace"}}>searching live sources · analyzing · synthesizing</div>
+    <div style={{fontSize:12,color:"#F5A623",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.01em"}}>{label}</div>
+    <div style={{fontSize:10,color:"var(--c5)",marginTop:5,fontFamily:"'JetBrains Mono',monospace"}}>searching live sources · analyzing · synthesizing</div>
   </div>);
 }
 function IBox({text,ts,color="#F5A623"}){
@@ -266,23 +266,23 @@ function IBox({text,ts,color="#F5A623"}){
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
       <div style={{display:"flex",alignItems:"center",gap:7}}>
         <div style={{width:6,height:6,borderRadius:"50%",background:"#4ECDC4"}}/>
-        <span style={{fontSize:9,color:"#4ECDC4",fontFamily:"'Space Mono',monospace",letterSpacing:"0.1em"}}>REPORT{ts?` · ${timeSince(ts)}`:""}</span>
+        <span style={{fontSize:9,color:"#4ECDC4",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.02em"}}>REPORT{ts?` · ${timeSince(ts)}`:""}</span>
       </div>
-      <button onClick={()=>{navigator.clipboard.writeText(text).then(()=>{setCop(true);setTimeout(()=>setCop(false),2000)})}} style={{padding:"3px 9px",background:"rgba(245,166,35,0.08)",border:"1px solid rgba(245,166,35,0.25)",borderRadius:5,fontSize:9,color:cop?"#4ECDC4":"#F5A623",fontFamily:"'Space Mono',monospace",fontWeight:700}}>{cop?"COPIED ✓":"COPY"}</button>
+      <button onClick={()=>{navigator.clipboard.writeText(text).then(()=>{setCop(true);setTimeout(()=>setCop(false),2000)})}} style={{padding:"3px 9px",background:"rgba(245,166,35,0.08)",border:"1px solid rgba(245,166,35,0.25)",borderRadius:5,fontSize:9,color:cop?"#4ECDC4":"#F5A623",fontFamily:"'JetBrains Mono',monospace",fontWeight:700}}>{cop?"COPIED ✓":"COPY"}</button>
     </div>
-    <pre style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:12.5,lineHeight:1.82,color:"var(--c1)",whiteSpace:"pre-wrap",wordBreak:"break-word"}}>{text}</pre>
+    <pre style={{fontFamily:"'Inter',sans-serif",fontSize:12.5,lineHeight:1.82,color:"var(--c1)",whiteSpace:"pre-wrap",wordBreak:"break-word"}}>{text}</pre>
   </div>);
 }
-function EHint({msg}){return(<div style={{padding:"22px",background:"var(--b2)",border:"1px dashed var(--bd)",borderRadius:10,textAlign:"center",color:"var(--c5)",fontSize:11,fontFamily:"'Space Mono',monospace"}}>{msg}</div>);}
-function SBar({label,score,color}){return(<div style={{marginBottom:11}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{fontSize:11,color:"var(--c2)"}}>{label}</span><span style={{fontSize:11,fontFamily:"'Space Mono',monospace",color,fontWeight:700}}>{score}/10</span></div><div style={{background:"var(--bd)",borderRadius:4,height:5,overflow:"hidden"}}><div style={{height:"100%",width:`${score*10}%`,background:color,borderRadius:4,transition:"width 0.8s ease"}}/></div></div>);}
+function EHint({msg}){return(<div style={{padding:"22px",background:"var(--b2)",border:"1px dashed var(--bd)",borderRadius:10,textAlign:"center",color:"var(--c5)",fontSize:11,fontFamily:"'JetBrains Mono',monospace"}}>{msg}</div>);}
+function SBar({label,score,color}){return(<div style={{marginBottom:11}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{fontSize:11,color:"var(--c2)"}}>{label}</span><span style={{fontSize:11,fontFamily:"'JetBrains Mono',monospace",color,fontWeight:700}}>{score}/10</span></div><div style={{background:"var(--bd)",borderRadius:4,height:5,overflow:"hidden"}}><div style={{height:"100%",width:`${score*10}%`,background:color,borderRadius:4,transition:"width 0.8s ease"}}/></div></div>);}
 function ScoreCard({text,ts}){
   const p=useMemo(()=>parseScores(text),[text]);
   const vc=p?.verdict?{"LAUNCH NOW":"#50D2A0","TEST FIRST":"#F5A623","WATCH & WAIT":"#FF9A3C","SKIP":"#FF6B6B"}[p.verdict]||"#F5A623":"#F5A623";
   const DIMS=["Market Size","Hiring Demand","Salary Impact","Competition (10=none)","Build Ease (10=easy)"];
   return(<div className="fu">{p&&(<div className="load-panel" style={{background:"var(--b2)",border:`1px solid ${vc}33`,borderRadius:10,padding:"18px",marginBottom:12}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
-      <div><div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:17,color:vc,marginBottom:1}}>{p.verdict||"SCORED"}</div>{p.total&&<div style={{fontSize:10,color:"var(--c4)",fontFamily:"'Space Mono',monospace"}}>LAUNCH SCORE: {p.total}/50</div>}</div>
-      <div style={{padding:"7px 14px",background:vc+"1A",border:`1px solid ${vc}44`,borderRadius:8,fontFamily:"'Space Mono',monospace",fontSize:18,fontWeight:700,color:vc}}>{p.total}/50</div>
+      <div><div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:17,color:vc,marginBottom:1}}>{p.verdict||"SCORED"}</div>{p.total&&<div style={{fontSize:10,color:"var(--c4)",fontFamily:"'JetBrains Mono',monospace"}}>LAUNCH SCORE: {p.total}/50</div>}</div>
+      <div style={{padding:"7px 14px",background:vc+"1A",border:`1px solid ${vc}44`,borderRadius:8,fontFamily:"'JetBrains Mono',monospace",fontSize:18,fontWeight:700,color:vc}}>{p.total}/50</div>
     </div>
     {DIMS.map((d,i)=>p.scores[i]!=null&&<SBar key={i} label={d} score={p.scores[i]} color={vc}/>)}
   </div>)}<IBox text={text} ts={ts}/></div>);
@@ -321,7 +321,7 @@ function SHIFT(){
     try{
       const r=await fetch("/api/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
       const d=await r.json();
-      const txt=(d.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim()||d.error||"Scan complete.";
+      const txt=(d.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim()||(d.type==="error"?`⚠ API Error: ${d.error?.message||JSON.stringify(d.error)}`:"")|| d.error||"Scan complete — no text returned.";
       const entry={data:txt,ts:Date.now()};
       LS.set(key,txt);setCache(p=>({...p,[key]:entry}));
       const nc=scanCount+1;setScanCount(nc);LS.set("scan_count",nc);
@@ -331,13 +331,13 @@ function SHIFT(){
     setLd(p=>({...p,[key]:false}));
   },[scanCount]);
 
-  const run=(prompt,key)=>scan({model:"claude-sonnet-4-20250514",max_tokens:1000,tools:[{type:"web_search_20250305",name:"web_search"}],messages:[{role:"user",content:prompt}]},key);
+  const run=(prompt,key)=>scan({model:"claude-haiku-4-5-20251001",max_tokens:1000,tools:[{type:"web_search_20250305",name:"web_search"}],messages:[{role:"user",content:prompt}]},key);
 
   const chat=useCallback(async(msg)=>{
     const nh=[...chatH,{role:"user",content:msg}];setChatH(nh);setChatIn("");setLd(p=>({...p,catmgr:true}));
     try{
       const {system,messages}=PROMPTS.catmgr(chatH,msg);
-      const r=await fetch("/api/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system,messages})});
+      const r=await fetch("/api/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system,messages})});
       const d=await r.json();
       const txt=(d.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim()||d.error||"No response.";
       const updated=[...nh,{role:"assistant",content:txt}];setChatH(updated);LS.set("chat_history",updated);
@@ -355,13 +355,13 @@ function SHIFT(){
     const sc=PROFILES.filter(p=>cache["h_"+p.id]).length;
     return(<div>
       <div style={{marginBottom:22}}>
-        <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:22,color:"var(--c0)",marginBottom:3}}>{greet()}, Category Architect</div>
-        <div style={{fontSize:11,color:"var(--c4)",fontFamily:"'Space Mono',monospace"}}>{dtStr} · {PROFILES.length} profiles · {COMP.filter(c=>c.tier!=="DEFUNCT").length} competitors · {IK_COURSES.length} courses · {scanCount} scans</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:22,color:"var(--c0)",marginBottom:3}}>{greet()}, Category Architect</div>
+        <div style={{fontSize:11,color:"var(--c4)",fontFamily:"'JetBrains Mono',monospace"}}>{dtStr} · {PROFILES.length} profiles · {COMP.filter(c=>c.tier!=="DEFUNCT").length} competitors · {IK_COURSES.length} courses · {scanCount} scans</div>
       </div>
       <div className="load-panel" style={{background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:10,padding:"16px 18px",marginBottom:20}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:12}}>
           <div>
-            <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,color:"var(--c0)",marginBottom:2}}>Full Intelligence Scan</div>
+            <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:14,color:"var(--c0)",marginBottom:2}}>Full Intelligence Scan</div>
             <div style={{fontSize:11,color:"var(--c4)"}}>Runs SIGNALS + RIVALS simultaneously ~20 seconds</div>
           </div>
           <button onClick={fullScan} disabled={fullSc}
@@ -369,13 +369,13 @@ function SHIFT(){
             onMouseLeave={e=>{if(!fullSc)e.currentTarget.style.background="rgba(245,166,35,0.08)"}}
             style={{display:"flex",alignItems:"center",gap:8,padding:"10px 20px",background:fullSc?"var(--b3)":"rgba(245,166,35,0.08)",border:`1px solid ${fullSc?"var(--bdd)":"#F5A623"}`,borderRadius:8,transition:"all 0.18s",flexShrink:0}}>
             {fullSc?<span className="spin" style={{fontSize:12,color:"#F5A623"}}>◌</span>:<span style={{color:"#F5A623",fontSize:11}}>⚡</span>}
-            <span style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:11,color:fullSc?"var(--c4)":"#F5A623",letterSpacing:"0.08em"}}>{fullSc?"SCANNING...":"RUN FULL SCAN"}</span>
+            <span style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:11,color:fullSc?"var(--c4)":"#F5A623",letterSpacing:"0.015em"}}>{fullSc?"SCANNING...":"RUN FULL SCAN"}</span>
           </button>
         </div>
         {fullSc&&<div style={{display:"flex",gap:18,marginTop:12,flexWrap:"wrap"}}>
           {["signals","rivals_live"].map(k=>(<div key={k} style={{display:"flex",alignItems:"center",gap:6}}>
             <div style={{width:6,height:6,borderRadius:"50%",background:"#F5A623",animation:ld[k]?"pulse 1s infinite":"none",opacity:cache[k]&&!ld[k]?0.4:1}}/>
-            <span style={{fontSize:9,fontFamily:"'Space Mono',monospace",color:ld[k]?"#F5A623":cache[k]?"#4ECDC4":"var(--c5)",letterSpacing:"0.07em"}}>{k.replace("_live"," INTEL").toUpperCase()} {cache[k]&&!ld[k]?"✓":""}</span>
+            <span style={{fontSize:9,fontFamily:"'JetBrains Mono',monospace",color:ld[k]?"#F5A623":cache[k]?"#4ECDC4":"var(--c5)",letterSpacing:"0.01em"}}>{k.replace("_live"," INTEL").toUpperCase()} {cache[k]&&!ld[k]?"✓":""}</span>
           </div>))}
         </div>}
       </div>
@@ -390,27 +390,27 @@ function SHIFT(){
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <span style={{fontSize:15,color:mod.c}}>{mod.icon}</span>
                 <div>
-                  <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:11,color:mod.c,letterSpacing:"0.08em"}}>{mod.label}</div>
-                  <div style={{fontSize:8,color:"var(--c5)",fontFamily:"'Space Mono',monospace"}}>{mod.sub}</div>
+                  <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:11,color:mod.c,letterSpacing:"0.015em"}}>{mod.label}</div>
+                  <div style={{fontSize:8,color:"var(--c5)",fontFamily:"'JetBrains Mono',monospace"}}>{mod.sub}</div>
                 </div>
               </div>
               <div style={{display:"flex",alignItems:"center",gap:4}}>
                 <div style={{width:6,height:6,borderRadius:"50%",background:isM||isR||isCat?"#50D2A0":isH?(sc>0?"#4ECDC4":"var(--c5)"):(fresh?"#50D2A0":"var(--c5)"),animation:ld[key]?"pulse 1s infinite":"none"}}/>
-                <span style={{fontSize:8,fontFamily:"'Space Mono',monospace",color:"var(--c5)"}}>{isM?"STATIC":isR?"16 LOADED":isCat?"READY":isH?(sc>0?`${sc} scanned`:"N/A"):(fresh||"N/A")}</span>
+                <span style={{fontSize:8,fontFamily:"'JetBrains Mono',monospace",color:"var(--c5)"}}>{isM?"STATIC":isR?"16 LOADED":isCat?"READY":isH?(sc>0?`${sc} scanned`:"N/A"):(fresh||"N/A")}</span>
               </div>
             </div>
             <div style={{fontSize:11,color:"var(--c4)",lineHeight:1.6,marginBottom:9,minHeight:30}}>
               {isM?"Pre-loaded from June 2026 research":isR?"16 competitors pre-loaded. Click to expand.":isCat?"Ask IK's virtual strategy advisor anything":isH?`${sc} of 18 profiles cached`:(ce?.data?.substring(0,75)+"..."||"Run scan to populate")}
             </div>
-            <div style={{fontSize:9,color:mod.c,fontFamily:"'Space Mono',monospace",letterSpacing:"0.08em"}}>→ OPEN</div>
+            <div style={{fontSize:9,color:mod.c,fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.015em"}}>→ OPEN</div>
           </div>);
         })}
       </div>
       <div className="load-panel" style={{background:"var(--b2)",border:"1px solid rgba(245,166,35,0.2)",borderRadius:10,padding:"16px 18px"}}>
-        <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:13,color:"#F5A623",marginBottom:12,letterSpacing:"0.06em"}}>IK SNAPSHOT — June 2026</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:13,color:"#F5A623",marginBottom:12,letterSpacing:"0.01em"}}>IK SNAPSHOT — June 2026</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:8}}>
           {Object.entries(MKT.ikFacts).map(([k,v])=>(<div key={k} style={{background:"var(--b3)",borderRadius:8,padding:"9px 11px"}}>
-            <div style={{fontSize:8,color:"var(--c4)",fontFamily:"'Space Mono',monospace",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:3}}>{k.replace(/([A-Z])/g," $1").trim()}</div>
+            <div style={{fontSize:8,color:"var(--c4)",fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",letterSpacing:"0.015em",marginBottom:3}}>{k.replace(/([A-Z])/g," $1").trim()}</div>
             <div style={{fontSize:12,color:"var(--c0)",fontWeight:600,lineHeight:1.3}}>{v}</div>
           </div>))}
         </div>
@@ -423,25 +423,25 @@ function SHIFT(){
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(155px,1fr))",gap:9,marginBottom:20}}>
       {[{l:"India EdTech 2025",v:MKT.size.val,sub:`${MKT.size.cagr} CAGR`,c:"#6366F1"},{l:"Projected 2030",v:MKT.size.proj,sub:MKT.size.src,c:"#6366F1"},{l:"AI Wage Premium",v:MKT.aiPrem,sub:"PwC 2025 Barometer",c:"#F5A623"},{l:"AI Job Postings",v:MKT.aiShare,sub:"of Indian tech JDs",c:"#50D2A0"},{l:"Active AI Roles",v:MKT.aiRoles,sub:"India job listings",c:"#4ECDC4"},{l:"MAANG vs Services",v:MKT.mult,sub:"salary multiplier",c:"#FF6B6B"}].map((s,i)=>(
         <div key={i} className="load-panel" style={{background:"var(--b2)",border:`1px solid ${s.c}22`,borderRadius:10,padding:"13px 14px",borderTop:`2px solid ${s.c}66`}}>
-          <div style={{fontSize:9,color:"var(--c4)",fontFamily:"'Space Mono',monospace",marginBottom:5,letterSpacing:"0.07em"}}>{s.l.toUpperCase()}</div>
-          <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:20,color:s.c,marginBottom:3}}>{s.v}</div>
-          <div style={{fontSize:9,color:"var(--c5)",fontFamily:"'Space Mono',monospace"}}>{s.sub}</div>
+          <div style={{fontSize:9,color:"var(--c4)",fontFamily:"'JetBrains Mono',monospace",marginBottom:5,letterSpacing:"0.01em"}}>{s.l.toUpperCase()}</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:20,color:s.c,marginBottom:3}}>{s.v}</div>
+          <div style={{fontSize:9,color:"var(--c5)",fontFamily:"'JetBrains Mono',monospace"}}>{s.sub}</div>
         </div>
       ))}
     </div>
     <div className="load-panel" style={{background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:10,padding:"16px 18px",marginBottom:18}}>
-      <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:13,color:"var(--c0)",marginBottom:14,letterSpacing:"0.05em"}}>CATEGORY GROWTH INTELLIGENCE — IK Coverage Assessment</div>
+      <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:13,color:"var(--c0)",marginBottom:14,letterSpacing:"0.01em"}}>CATEGORY GROWTH INTELLIGENCE — IK Coverage Assessment</div>
       <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:11}}>
-          <thead><tr style={{borderBottom:`1px solid var(--bd)`}}>{["Category","CAGR","Demand","Salary Premium","IK Coverage","Strategic Note"].map(h=>(<th key={h} style={{textAlign:"left",padding:"7px 10px",color:"var(--c4)",fontFamily:"'Space Mono',monospace",fontSize:8,letterSpacing:"0.08em",whiteSpace:"nowrap"}}>{h.toUpperCase()}</th>))}</tr></thead>
+          <thead><tr style={{borderBottom:`1px solid var(--bd)`}}>{["Category","CAGR","Demand","Salary Premium","IK Coverage","Strategic Note"].map(h=>(<th key={h} style={{textAlign:"left",padding:"7px 10px",color:"var(--c4)",fontFamily:"'JetBrains Mono',monospace",fontSize:8,letterSpacing:"0.015em",whiteSpace:"nowrap"}}>{h.toUpperCase()}</th>))}</tr></thead>
           <tbody>{MKT.cats.map((c,i)=>(<tr key={i} className="trow" style={{borderBottom:`1px solid var(--bds)`}}
             onMouseEnter={e=>e.currentTarget.style.background="rgba(99,102,241,0.04)"}
             onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
             <td style={{padding:"9px 10px",color:"var(--c0)",fontWeight:600,whiteSpace:"nowrap"}}>{c.n}</td>
-            <td style={{padding:"9px 10px",fontFamily:"'Space Mono',monospace",color:"#F5A623",fontWeight:700,whiteSpace:"nowrap"}}>{c.cagr}</td>
+            <td style={{padding:"9px 10px",fontFamily:"'JetBrains Mono',monospace",color:"#F5A623",fontWeight:700,whiteSpace:"nowrap"}}>{c.cagr}</td>
             <td style={{padding:"9px 10px"}}><div style={{display:"flex",gap:3}}>{[1,2,3,4,5].map(n=><div key={n} style={{width:7,height:7,borderRadius:2,background:n<=c.dem?"#F5A623":"var(--bd)"}}/>)}</div></td>
-            <td style={{padding:"9px 10px",color:"var(--c2)",fontFamily:"'Space Mono',monospace",whiteSpace:"nowrap"}}>{c.prem}</td>
-            <td style={{padding:"9px 10px"}}><span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:5,background:c.ikC+"1A",color:c.ikC,fontFamily:"'Space Mono',monospace",whiteSpace:"nowrap"}}>{c.ik}</span></td>
+            <td style={{padding:"9px 10px",color:"var(--c2)",fontFamily:"'JetBrains Mono',monospace",whiteSpace:"nowrap"}}>{c.prem}</td>
+            <td style={{padding:"9px 10px"}}><span style={{fontSize:8,fontWeight:500,padding:"2px 7px",borderRadius:5,background:c.ikC+"1A",color:c.ikC,fontFamily:"'JetBrains Mono',monospace",whiteSpace:"nowrap"}}>{c.ik}</span></td>
             <td style={{padding:"9px 10px",color:"var(--c4)",fontSize:10.5,lineHeight:1.4}}>{c.note}</td>
           </tr>))}</tbody>
         </table>
@@ -450,16 +450,16 @@ function SHIFT(){
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:18}}>
       {[{title:"MAANG / Big Tech",data:MKT.maang,c:"#50D2A0"},{title:"IT Services (TCS/Infosys/Wipro)",data:MKT.services,c:"#FF6B6B"}].map((s,i)=>(
         <div key={i} className="load-panel" style={{background:"var(--b2)",border:`1px solid ${s.c}22`,borderRadius:10,padding:"14px"}}>
-          <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:11,color:s.c,marginBottom:10,letterSpacing:"0.06em"}}>{s.title}</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:11,color:s.c,marginBottom:10,letterSpacing:"0.01em"}}>{s.title}</div>
           {Object.entries(s.data).map(([k,v])=>(<div key={k} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`1px solid var(--bds)`}}>
             <span style={{fontSize:10,color:"var(--c3)",textTransform:"capitalize"}}>{k}</span>
-            <span style={{fontSize:11,fontFamily:"'Space Mono',monospace",color:"var(--c0)",fontWeight:600}}>{v}</span>
+            <span style={{fontSize:11,fontFamily:"'JetBrains Mono',monospace",color:"var(--c0)",fontWeight:600}}>{v}</span>
           </div>))}
         </div>
       ))}
     </div>
     <div className="load-panel" style={{background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:10,padding:"14px 16px"}}>
-      <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:12,color:"var(--c0)",marginBottom:10,letterSpacing:"0.05em"}}>TOP HIRING COMPANIES IN INDIA</div>
+      <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:12,color:"var(--c0)",marginBottom:10,letterSpacing:"0.01em"}}>TOP HIRING COMPANIES IN INDIA</div>
       <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>{MKT.topCos.map(c=>(<div key={c} style={{padding:"4px 11px",background:"var(--b3)",border:"1px solid var(--bd)",borderRadius:20,fontSize:10,color:"var(--c2)"}}>{c}</div>))}</div>
     </div>
   </div>);
@@ -472,7 +472,7 @@ function SHIFT(){
     return(<div>
       <p style={{color:"var(--c3)",fontSize:12.5,lineHeight:1.75,marginBottom:14}}>Pre-loaded from June 2026 deep research. 14 active + 2 defunct. Click any card for full analysis. Refresh for latest moves.</p>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10,marginBottom:16}}>
-        <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>{tiers.map(t=>{const a=compF===t,c=TIER_C[t]||"#F5A623";return(<button key={t} onClick={()=>setCompF(t)} style={{padding:"5px 13px",background:a?c+"1A":"var(--b2)",border:`1px solid ${a?c:"var(--bd)"}`,borderRadius:20,fontSize:10,fontWeight:600,color:a?c:"var(--c4)",transition:"all 0.15s",fontFamily:"'Space Mono',monospace"}}>{t}</button>);})}</div>
+        <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>{tiers.map(t=>{const a=compF===t,c=TIER_C[t]||"#F5A623";return(<button key={t} onClick={()=>setCompF(t)} style={{padding:"5px 13px",background:a?c+"1A":"var(--b2)",border:`1px solid ${a?c:"var(--bd)"}`,borderRadius:20,fontSize:10,fontWeight:600,color:a?c:"var(--c4)",transition:"all 0.15s",fontFamily:"'JetBrains Mono',monospace"}}>{t}</button>);})}</div>
         <ScanBtn label="REFRESH LIVE INTEL" onClick={()=>run(PROMPTS.rivals_refresh(),"rivals_live")} isLoading={ld.rivals_live} color="#FF6B6B"/>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:9,marginBottom:18}}>
@@ -483,39 +483,39 @@ function SHIFT(){
             style={{background:isSel?"var(--b1)":"var(--b2)",border:`1px solid ${isSel?thr+"55":"var(--bd)"}`,borderRadius:10,padding:"13px 14px",cursor:"pointer",transition:"all 0.18s",borderTop:`2px solid ${thr}55`}}>
             <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:9}}>
               <div>
-                <div style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:13,color:"var(--c0)",marginBottom:5}}>{c.n}</div>
+                <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:13,color:"var(--c0)",marginBottom:5}}>{c.n}</div>
                 <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-                  <span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:4,background:tc+"1A",color:tc,fontFamily:"'Space Mono',monospace"}}>{c.tier}</span>
-                  <span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:4,background:thr+"1A",color:thr,fontFamily:"'Space Mono',monospace"}}>⚠ {c.threat}</span>
+                  <span style={{fontSize:8,fontWeight:500,padding:"2px 7px",borderRadius:4,background:tc+"1A",color:tc,fontFamily:"'JetBrains Mono',monospace"}}>{c.tier}</span>
+                  <span style={{fontSize:8,fontWeight:500,padding:"2px 7px",borderRadius:4,background:thr+"1A",color:thr,fontFamily:"'JetBrains Mono',monospace"}}>⚠ {c.threat}</span>
                 </div>
               </div>
               <div style={{textAlign:"right",flexShrink:0}}>
-                <div style={{fontSize:12,fontFamily:"'Space Mono',monospace",color:"var(--c0)",fontWeight:700}}>{c.rev}</div>
-                <div style={{fontSize:8,color:"var(--c5)",fontFamily:"'Space Mono',monospace"}}>{c.revFY}</div>
+                <div style={{fontSize:12,fontFamily:"'JetBrains Mono',monospace",color:"var(--c0)",fontWeight:700}}>{c.rev}</div>
+                <div style={{fontSize:8,color:"var(--c5)",fontFamily:"'JetBrains Mono',monospace"}}>{c.revFY}</div>
               </div>
             </div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:9}}>
               {[["FUND",c.fund],["PRICE",c.price],["STUDENTS",c.stu],["2025 AI",c.ai25.substring(0,42)+"..."]].map(([l,v])=>(<div key={l} style={{background:"var(--b3)",borderRadius:6,padding:"5px 7px"}}>
-                <div style={{fontSize:7,color:"var(--c5)",fontFamily:"'Space Mono',monospace",letterSpacing:"0.07em",marginBottom:2}}>{l}</div>
+                <div style={{fontSize:7,color:"var(--c5)",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.01em",marginBottom:2}}>{l}</div>
                 <div style={{fontSize:10,color:"var(--c2)",lineHeight:1.3}}>{v}</div>
               </div>))}
             </div>
             {isSel&&(<div className="fu">
               <div style={{padding:"9px",background:"rgba(255,107,107,0.07)",border:"1px solid rgba(255,107,107,0.18)",borderRadius:7,marginBottom:7}}>
-                <div style={{fontSize:8,color:"#FF6B6B",fontFamily:"'Space Mono',monospace",marginBottom:3}}>FULL 2025 AI MOVE</div>
+                <div style={{fontSize:8,color:"#FF6B6B",fontFamily:"'JetBrains Mono',monospace",marginBottom:3}}>FULL 2025 AI MOVE</div>
                 <div style={{fontSize:10.5,color:"var(--c1)",lineHeight:1.6}}>{c.ai25}</div>
               </div>
               <div style={{padding:"9px",background:"rgba(80,210,160,0.06)",border:"1px solid rgba(80,210,160,0.15)",borderRadius:7,marginBottom:7}}>
-                <div style={{fontSize:8,color:"#50D2A0",fontFamily:"'Space Mono',monospace",marginBottom:3}}>IK'S GAP TO EXPLOIT</div>
+                <div style={{fontSize:8,color:"#50D2A0",fontFamily:"'JetBrains Mono',monospace",marginBottom:3}}>IK'S GAP TO EXPLOIT</div>
                 <div style={{fontSize:10.5,color:"var(--c1)",lineHeight:1.6}}>{c.gap}</div>
               </div>
               <div style={{padding:"9px",background:"rgba(245,166,35,0.06)",border:"1px solid rgba(245,166,35,0.15)",borderRadius:7,marginBottom:7}}>
-                <div style={{fontSize:8,color:"#F5A623",fontFamily:"'Space Mono',monospace",marginBottom:3}}>vs IK ANALYSIS</div>
+                <div style={{fontSize:8,color:"#F5A623",fontFamily:"'JetBrains Mono',monospace",marginBottom:3}}>vs IK ANALYSIS</div>
                 <div style={{fontSize:10.5,color:"var(--c1)",lineHeight:1.6}}>{c.vsIK}</div>
               </div>
-              {c.prof.length>0&&<div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{c.prof.map(p=><span key={p} style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:4,background:TAG[p]?.bg||"var(--bd)",color:TAG[p]?.c||"var(--c2)",fontFamily:"'Space Mono',monospace"}}>{p}</span>)}</div>}
+              {c.prof.length>0&&<div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{c.prof.map(p=><span key={p} style={{fontSize:8,fontWeight:500,padding:"2px 7px",borderRadius:4,background:TAG[p]?.bg||"var(--bd)",color:TAG[p]?.c||"var(--c2)",fontFamily:"'JetBrains Mono',monospace"}}>{p}</span>)}</div>}
             </div>)}
-            <div style={{fontSize:9,color:"var(--c5)",fontFamily:"'Space Mono',monospace",marginTop:7}}>{isSel?"▲ COLLAPSE":"▼ EXPAND ANALYSIS"}</div>
+            <div style={{fontSize:9,color:"var(--c5)",fontFamily:"'JetBrains Mono',monospace",marginTop:7}}>{isSel?"▲ COLLAPSE":"▼ EXPAND ANALYSIS"}</div>
           </div>);
         })}
       </div>
@@ -531,22 +531,22 @@ function SHIFT(){
     const sk="h_"+prof;
     return(<div>
       <p style={{color:"var(--c3)",fontSize:12.5,lineHeight:1.75,marginBottom:14}}>Select any of 18 profiles. Scans live job market — demand, skills, AI additions, salary, course opportunities.</p>
-      <div style={{display:"flex",gap:7,marginBottom:14,flexWrap:"wrap"}}>{cats.map(c=>{const a=catF===c,tc=c==="ALL"?{c:"var(--c0)"}:TAG[c]||{c:"var(--c0)"};return(<button key={c} onClick={()=>setCatF(c)} style={{padding:"5px 13px",background:a?(c==="ALL"?"rgba(245,166,35,0.12)":TAG[c]?.c+"1A"):"var(--b2)",border:`1px solid ${a?(c==="ALL"?"#F5A623":TAG[c]?.c):"var(--bd)"}`,borderRadius:20,fontSize:10,fontWeight:600,color:a?(c==="ALL"?"#F5A623":TAG[c]?.c):"var(--c4)",transition:"all 0.15s",fontFamily:"'Space Mono',monospace"}}>{c}</button>);})}</div>
+      <div style={{display:"flex",gap:7,marginBottom:14,flexWrap:"wrap"}}>{cats.map(c=>{const a=catF===c,tc=c==="ALL"?{c:"var(--c0)"}:TAG[c]||{c:"var(--c0)"};return(<button key={c} onClick={()=>setCatF(c)} style={{padding:"5px 13px",background:a?(c==="ALL"?"rgba(245,166,35,0.12)":TAG[c]?.c+"1A"):"var(--b2)",border:`1px solid ${a?(c==="ALL"?"#F5A623":TAG[c]?.c):"var(--bd)"}`,borderRadius:20,fontSize:10,fontWeight:600,color:a?(c==="ALL"?"#F5A623":TAG[c]?.c):"var(--c4)",transition:"all 0.15s",fontFamily:"'JetBrains Mono',monospace"}}>{c}</button>);})}</div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(136px,1fr))",gap:7,marginBottom:16}}>
         {filtered.map(p=>{const tc=TAG[p.t];const sel=prof===p.id;const hc=!!cache["h_"+p.id];
           return(<button key={p.id} onClick={()=>setProf(p.id)} className="pcard"
             style={{background:sel?"rgba(245,166,35,0.08)":"var(--b2)",border:`1px solid ${sel?"#F5A623":"var(--bd)"}`,borderRadius:8,padding:"9px 11px",textAlign:"left",transition:"all 0.15s",position:"relative"}}>
             {hc&&<div style={{position:"absolute",top:5,right:6,width:6,height:6,borderRadius:"50%",background:"#50D2A0"}}/>}
             <div style={{fontSize:10.5,fontWeight:600,color:sel?"#F5A623":"var(--c0)",marginBottom:6,lineHeight:1.3,paddingRight:8}}>{p.l}</div>
-            <span style={{fontSize:8,fontWeight:700,padding:"2px 6px",borderRadius:4,background:tc.bg,color:tc.c,fontFamily:"'Space Mono',monospace"}}>{p.t}</span>
+            <span style={{fontSize:8,fontWeight:500,padding:"2px 6px",borderRadius:4,background:tc.bg,color:tc.c,fontFamily:"'JetBrains Mono',monospace"}}>{p.t}</span>
           </button>);
         })}
       </div>
       {prof?(
         <>
           <div style={{padding:"9px 13px",background:"rgba(78,205,196,0.07)",border:"1px solid rgba(78,205,196,0.22)",borderRadius:8,marginBottom:12,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-            <span style={{color:"#4ECDC4",fontSize:10,fontWeight:700,fontFamily:"'Space Mono',monospace",letterSpacing:"0.08em"}}>SELECTED → {PROFILES.find(p=>p.id===prof)?.l}</span>
-            {cache[sk]&&<span style={{fontSize:9,color:"#50D2A0",fontFamily:"'Space Mono',monospace"}}>cached {timeSince(cache[sk].ts)}</span>}
+            <span style={{color:"#4ECDC4",fontSize:10,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.015em"}}>SELECTED → {PROFILES.find(p=>p.id===prof)?.l}</span>
+            {cache[sk]&&<span style={{fontSize:9,color:"#50D2A0",fontFamily:"'JetBrains Mono',monospace"}}>cached {timeSince(cache[sk].ts)}</span>}
           </div>
           <ScanBtn label={`SCAN: ${(PROFILES.find(p=>p.id===prof)?.l||"").toUpperCase()}`}
             onClick={()=>{const pl=PROFILES.find(p=>p.id===prof)?.l;run(PROMPTS.hiring(pl),"h_"+prof);}}
@@ -560,7 +560,7 @@ function SHIFT(){
 
   /* ── SIGNALS ── */
   const rSignals=()=>(<div>
-    <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:16}}>{[["S","Signals"],["H","Hiring"],["I","Intelligence"],["F","Funding"],["T","Trends"]].map(([l,w])=>(<div key={l} style={{background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:8,padding:"6px 13px",display:"flex",alignItems:"center",gap:7}}><span style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:17,color:"#F5A623"}}>{l}</span><span style={{fontSize:11,color:"var(--c2)"}}>{w}</span></div>))}</div>
+    <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:16}}>{[["S","Signals"],["H","Hiring"],["I","Intelligence"],["F","Funding"],["T","Trends"]].map(([l,w])=>(<div key={l} style={{background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:8,padding:"6px 13px",display:"flex",alignItems:"center",gap:7}}><span style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:17,color:"#F5A623"}}>{l}</span><span style={{fontSize:11,color:"var(--c2)"}}>{w}</span></div>))}</div>
     <p style={{color:"var(--c3)",fontSize:12.5,lineHeight:1.75,marginBottom:16}}>Daily intelligence briefing. Scans live AI industry news, job role trends, EdTech moves, and hiring signals.</p>
     <ScanBtn label="RUN MORNING BRIEFING" onClick={()=>run(PROMPTS.signals(),"signals")} isLoading={ld.signals}/>
     {ld.signals&&<LoadBox label="Scanning live intelligence sources..."/>}
@@ -572,13 +572,13 @@ function SHIFT(){
   const rEngine=()=>(<div>
     <p style={{color:"var(--c3)",fontSize:12.5,lineHeight:1.75,marginBottom:16}}>Enter any course idea. Scores across 5 dimensions, gives a launch verdict, positioning angle, and first move.</p>
     <div style={{marginBottom:13}}>
-      <label style={{display:"block",fontSize:10,color:"#50D2A0",fontWeight:700,marginBottom:5,textTransform:"uppercase",letterSpacing:"0.1em",fontFamily:"'Space Mono',monospace"}}>Course Idea</label>
+      <label style={{display:"block",fontSize:10,color:"#50D2A0",fontWeight:700,marginBottom:5,textTransform:"uppercase",letterSpacing:"0.02em",fontFamily:"'JetBrains Mono',monospace"}}>Course Idea</label>
       <textarea value={idea} onChange={e=>setIdea(e.target.value)} rows={3} placeholder="e.g.  AI Product Manager Bootcamp,  Agentic AI for TPMs..."
         onFocus={e=>e.target.style.borderColor="rgba(80,210,160,0.5)"} onBlur={e=>e.target.style.borderColor="var(--bd)"}
         style={{width:"100%",background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:8,padding:"11px 13px",color:"var(--c0)",fontSize:12.5,lineHeight:1.6,transition:"border-color 0.2s"}}/>
     </div>
     <div style={{marginBottom:16}}>
-      <div style={{fontSize:9,color:"var(--c5)",marginBottom:6,fontFamily:"'Space Mono',monospace",letterSpacing:"0.1em"}}>QUICK IDEAS →</div>
+      <div style={{fontSize:9,color:"var(--c5)",marginBottom:6,fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.02em"}}>QUICK IDEAS →</div>
       <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{QUICK_IDEAS.map(q=><button key={q} onClick={()=>setIdea(q)} className="pill" style={{padding:"4px 10px",background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:20,fontSize:10,color:"var(--c3)",transition:"all 0.15s"}}>{q}</button>)}</div>
     </div>
     <ScanBtn label="SCORE THIS OPPORTUNITY" onClick={()=>{if(idea.trim())run(PROMPTS.engine(idea.trim()),"engine_latest");}} isLoading={ld.engine_latest} disabled={!idea.trim()} color="#50D2A0"/>
@@ -592,17 +592,17 @@ function SHIFT(){
   const rCatMgr=()=>(<div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 178px)"}}>
     <p style={{color:"var(--c3)",fontSize:12.5,lineHeight:1.75,marginBottom:12,flexShrink:0}}>Pre-loaded with IK's full course portfolio, 16 competitors, June 2026 market data. Your senior Category Strategist. Enter to send.</p>
     {chatH.length===0&&(<div style={{marginBottom:14,flexShrink:0}}>
-      <div style={{fontSize:9,color:"var(--c5)",marginBottom:6,fontFamily:"'Space Mono',monospace",letterSpacing:"0.1em"}}>SUGGESTED QUESTIONS →</div>
+      <div style={{fontSize:9,color:"var(--c5)",marginBottom:6,fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.02em"}}>SUGGESTED QUESTIONS →</div>
       <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{SUGG.map(q=><button key={q} onClick={()=>chat(q)} className="pill" style={{padding:"4px 10px",background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:20,fontSize:10,color:"var(--c3)",transition:"all 0.15s",textAlign:"left"}}>{q}</button>)}</div>
     </div>)}
     <div ref={chatRef} style={{flex:1,overflowY:"auto",background:"var(--b1)",borderRadius:10,border:"1px solid var(--bd)",padding:"14px",marginBottom:10,minHeight:160}}>
-      {chatH.length===0?(<div style={{textAlign:"center",padding:"36px 20px",color:"var(--c5)",fontFamily:"'Space Mono',monospace",fontSize:11}}>
+      {chatH.length===0?(<div style={{textAlign:"center",padding:"36px 20px",color:"var(--c5)",fontFamily:"'JetBrains Mono',monospace",fontSize:11}}>
         ◧ Virtual Category Manager ready<br/><span style={{fontSize:9,marginTop:7,display:"block"}}>Context: 13 courses · 16 competitors · June 2026 market data</span>
       </div>):(
         chatH.map((m,i)=>(<div key={i} className="chat-msg" style={{marginBottom:14,display:"flex",gap:9,flexDirection:m.role==="user"?"row-reverse":"row"}}>
-          <div style={{width:26,height:26,borderRadius:"50%",background:m.role==="user"?"rgba(245,166,35,0.18)":"rgba(168,85,247,0.18)",border:`1px solid ${m.role==="user"?"rgba(245,166,35,0.4)":"rgba(168,85,247,0.4)"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:10,color:m.role==="user"?"#F5A623":"#A855F7",fontFamily:"'Syne',sans-serif",fontWeight:700}}>{m.role==="user"?"U":"AI"}</div>
+          <div style={{width:26,height:26,borderRadius:"50%",background:m.role==="user"?"rgba(245,166,35,0.18)":"rgba(168,85,247,0.18)",border:`1px solid ${m.role==="user"?"rgba(245,166,35,0.4)":"rgba(168,85,247,0.4)"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:10,color:m.role==="user"?"#F5A623":"#A855F7",fontFamily:"'Inter',sans-serif",fontWeight:700}}>{m.role==="user"?"U":"AI"}</div>
           <div style={{background:m.role==="user"?"rgba(245,166,35,0.06)":"rgba(168,85,247,0.06)",border:`1px solid ${m.role==="user"?"rgba(245,166,35,0.14)":"rgba(168,85,247,0.12)"}`,borderRadius:10,padding:"11px 13px",maxWidth:"85%"}}>
-            <pre style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:12.5,lineHeight:1.78,color:"var(--c0)",whiteSpace:"pre-wrap",wordBreak:"break-word"}}>{m.content}</pre>
+            <pre style={{fontFamily:"'Inter',sans-serif",fontSize:12.5,lineHeight:1.78,color:"var(--c0)",whiteSpace:"pre-wrap",wordBreak:"break-word"}}>{m.content}</pre>
           </div>
         </div>))
       )}
@@ -615,8 +615,8 @@ function SHIFT(){
         onFocus={e=>e.target.style.borderColor="rgba(168,85,247,0.5)"} onBlur={e=>e.target.style.borderColor="var(--bd)"}
         style={{flex:1,background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:8,padding:"11px 13px",color:"var(--c0)",fontSize:12.5,lineHeight:1.5,transition:"border-color 0.2s"}}/>
       <button onClick={()=>{if(chatIn.trim())chat(chatIn.trim());}} disabled={!chatIn.trim()||ld.catmgr}
-        style={{padding:"11px 16px",background:chatIn.trim()&&!ld.catmgr?"rgba(168,85,247,0.12)":"var(--b3)",border:`1px solid ${chatIn.trim()&&!ld.catmgr?"#A855F7":"var(--bdd)"}`,borderRadius:8,color:chatIn.trim()&&!ld.catmgr?"#A855F7":"var(--c5)",fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:11,letterSpacing:"0.08em",transition:"all 0.18s",alignSelf:"stretch"}}>SEND</button>
-      {chatH.length>0&&<button onClick={()=>{setChatH([]);LS.set("chat_history",[]);}} style={{padding:"11px 13px",background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:8,color:"var(--c5)",fontSize:10,fontFamily:"'Space Mono',monospace",alignSelf:"stretch",transition:"all 0.15s"}} onMouseEnter={e=>e.currentTarget.style.color="#FF6B6B"} onMouseLeave={e=>e.currentTarget.style.color="var(--c5)"}>CLEAR</button>}
+        style={{padding:"11px 16px",background:chatIn.trim()&&!ld.catmgr?"rgba(168,85,247,0.12)":"var(--b3)",border:`1px solid ${chatIn.trim()&&!ld.catmgr?"#A855F7":"var(--bdd)"}`,borderRadius:8,color:chatIn.trim()&&!ld.catmgr?"#A855F7":"var(--c5)",fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:11,letterSpacing:"0.015em",transition:"all 0.18s",alignSelf:"stretch"}}>SEND</button>
+      {chatH.length>0&&<button onClick={()=>{setChatH([]);LS.set("chat_history",[]);}} style={{padding:"11px 13px",background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:8,color:"var(--c5)",fontSize:10,fontFamily:"'JetBrains Mono',monospace",alignSelf:"stretch",transition:"all 0.15s"}} onMouseEnter={e=>e.currentTarget.style.color="#FF6B6B"} onMouseLeave={e=>e.currentTarget.style.color="var(--c5)"}>CLEAR</button>}
     </div>
   </div>);
 
@@ -626,16 +626,16 @@ function SHIFT(){
     {/* HEADER */}
     <div style={{height:50,flexShrink:0,padding:"0 20px",borderBottom:"1px solid var(--bdh)",display:"flex",alignItems:"center",justifyContent:"space-between",background:"var(--bh)",zIndex:200,backdropFilter:"blur(12px)",boxShadow:"0 1px 0 0 rgba(245,166,35,0.07)"}}>
       <div style={{display:"flex",alignItems:"center",gap:11}}>
-        <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:22,color:"#F5A623",letterSpacing:"-0.02em",lineHeight:1}}>SHIFT</div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:22,color:"#F5A623",letterSpacing:"-0.02em",lineHeight:1}}>SHIFT</div>
         <div style={{width:1,height:22,background:"var(--bdh)"}}/>
         <div>
-          <div style={{fontSize:8,color:"var(--c5)",fontFamily:"'Space Mono',monospace",letterSpacing:"0.1em"}}>SKILLS · HIRING · INTELLIGENCE · FUNDING · TRENDS</div>
-          <div style={{fontSize:8,color:"var(--c7)",fontFamily:"'Space Mono',monospace"}}>Interview Kickstart · Category Intelligence OS v2</div>
+          <div style={{fontSize:8,color:"var(--c5)",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.02em"}}>SKILLS · HIRING · INTELLIGENCE · FUNDING · TRENDS</div>
+          <div style={{fontSize:8,color:"var(--c7)",fontFamily:"'JetBrains Mono',monospace"}}>Interview Kickstart · Category Intelligence OS v2</div>
         </div>
       </div>
       <div style={{textAlign:"right"}}>
-        <div style={{fontFamily:"'Space Mono',monospace",fontSize:11,color:"#F5A623",letterSpacing:"0.05em"}}>{tsStr}</div>
-        <div style={{fontFamily:"'Space Mono',monospace",fontSize:8,color:"var(--c5)",marginTop:1}}>{dtStr}</div>
+        <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:"#F5A623",letterSpacing:"0.01em"}}>{tsStr}</div>
+        <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:8,color:"var(--c5)",marginTop:1}}>{dtStr}</div>
       </div>
     </div>
     {/* BODY */}
@@ -647,24 +647,24 @@ function SHIFT(){
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               <span style={{fontSize:13,opacity:active?1:0.4,color:mod.c}}>{mod.icon}</span>
               <div>
-                <div className="nav-lbl" style={{fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:10,color:active?mod.c:"var(--cn)",letterSpacing:"0.08em",opacity:active?1:0.8,transition:"opacity 0.15s"}}>{mod.label}</div>
-                <div style={{fontSize:7,color:active?"var(--c4)":"var(--cns)",fontFamily:"'Space Mono',monospace"}}>{mod.sub}</div>
+                <div className="nav-lbl" style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:10,color:active?mod.c:"var(--cn)",letterSpacing:"0.015em",opacity:active?1:0.8,transition:"opacity 0.15s"}}>{mod.label}</div>
+                <div style={{fontSize:7,color:active?"var(--c4)":"var(--cns)",fontFamily:"'JetBrains Mono',monospace"}}>{mod.sub}</div>
               </div>
             </div>
           </button>);})}
         </div>
         <div style={{padding:"11px 14px",borderTop:"1px solid var(--bdh)"}}>
-          <div style={{fontSize:8,color:"var(--c6)",fontFamily:"'Space Mono',monospace",marginBottom:2}}>TOTAL SCANS</div>
-          <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:18,color:"#F5A623"}}>{scanCount}</div>
-          <div style={{fontSize:7,color:"var(--c6)",fontFamily:"'Space Mono',monospace",marginTop:4}}>v2.0 · SHIFT by IK</div>
+          <div style={{fontSize:8,color:"var(--c6)",fontFamily:"'JetBrains Mono',monospace",marginBottom:2}}>TOTAL SCANS</div>
+          <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:18,color:"#F5A623"}}>{scanCount}</div>
+          <div style={{fontSize:7,color:"var(--c6)",fontFamily:"'JetBrains Mono',monospace",marginTop:4}}>v2.0 · SHIFT by IK</div>
         </div>
       </div>
       {/* MAIN */}
       <div style={{flex:1,overflowY:"auto",padding:tab==="catmgr"?"22px 26px 0":"22px 26px 56px"}}>
         <div style={{maxWidth:tab==="market"||tab==="rivals"?1000:840,margin:"0 auto"}}>
           {tab!=="home"&&(<div style={{marginBottom:18}}>
-            <h1 style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:19,color:cm?.c||"var(--c0)",marginBottom:2,letterSpacing:"-0.01em"}}>{cm?.label}</h1>
-            <div style={{fontSize:8,color:"var(--c5)",fontFamily:"'Space Mono',monospace",letterSpacing:"0.1em"}}>{cm?.sub}</div>
+            <h1 style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:19,color:cm?.c||"var(--c0)",marginBottom:2,letterSpacing:"-0.01em"}}>{cm?.label}</h1>
+            <div style={{fontSize:8,color:"var(--c5)",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.02em"}}>{cm?.sub}</div>
           </div>)}
           {tab==="home"    &&rHome()}
           {tab==="market"  &&rMarket()}

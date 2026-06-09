@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return res.status(200).json({
-      content: [{ type: 'text', text: '⚠️ ANTHROPIC_API_KEY not configured.\n\nGo to:\nVercel Dashboard → Your Project → Settings → Environment Variables\n→ Add: ANTHROPIC_API_KEY = (your key from console.anthropic.com)\n→ Then: Deployments tab → latest → Redeploy' }]
+      content: [{ type: 'text', text: '⚠️ ANTHROPIC_API_KEY not set.\n\nGo to: Vercel Dashboard → Project → Settings → Environment Variables\nAdd: ANTHROPIC_API_KEY = sk-ant-...\nThen: Deployments → latest → Redeploy' }]
     });
   }
 
@@ -19,8 +19,9 @@ export default async function handler(req, res) {
       'x-api-key': apiKey,
       'anthropic-version': '2023-06-01',
     };
-    const hasWebSearch = body.tools?.some(t => t.name === 'web_search');
-    if (hasWebSearch) headers['anthropic-beta'] = 'web-search-2025-03-05';
+    if (body.tools?.some(t => t.name === 'web_search')) {
+      headers['anthropic-beta'] = 'web-search-2025-03-05';
+    }
 
     const upstream = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -30,18 +31,17 @@ export default async function handler(req, res) {
 
     const data = await upstream.json();
 
-    // Anthropic API returned an error object (model not found, auth failed, etc.)
-    if (data.type === 'error' || !upstream.ok) {
-      const errMsg = data.error?.message || data.message || JSON.stringify(data);
+    if (!upstream.ok || data.type === 'error') {
+      const msg = data.error?.message || JSON.stringify(data.error || data);
       return res.status(200).json({
-        content: [{ type: 'text', text: `⚠️ API Error (${upstream.status}): ${errMsg}\n\nCommon fixes:\n• Invalid key → check console.anthropic.com\n• Rate limit → wait a moment and retry\n• Model unavailable → already handled by proxy` }]
+        content: [{ type: 'text', text: `⚠️ API Error ${upstream.status}: ${msg}` }]
       });
     }
 
     return res.status(200).json(data);
   } catch (e) {
     return res.status(200).json({
-      content: [{ type: 'text', text: `⚠️ Network error: ${e.message}\n\nCheck your Vercel function logs for details.` }]
+      content: [{ type: 'text', text: `⚠️ Function error: ${e.message}` }]
     });
   }
-}
+};

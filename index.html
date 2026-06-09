@@ -13,9 +13,9 @@
   --b0:#07071A; --b1:#0A0A1E; --b2:#0D0D24; --b3:#111128;
   --bh:rgba(7,7,26,0.98);
   /* Borders */
-  --bd:#1E1E3F; --bds:#0F0F28; --bdh:#1A1A35; --bdd:#252540;
+  --bd:#282856; --bds:#1A1A40; --bdh:#1A1A35; --bdd:#252540;
   /* Text */
-  --c0:#E2E8F4; --c1:#D0D8EE; --c2:#A0A8C0; --c3:#7A82A0;
+  --c0:#EEF2FF; --c1:#DBE4FA; --c2:#B0BCE0; --c3:#7A82A0;
   --c4:#5A6080; --c5:#3A3A55; --c6:#2E2E4A; --c7:#1E1E2E;
   --cn:#4A4A65; --cns:#252535;
   /* Misc */
@@ -27,8 +27,8 @@
   :root {
     --b0:#F0F1F8; --b1:#E8EBF5; --b2:#FFFFFF; --b3:#F4F5FD;
     --bh:rgba(244,245,251,0.97);
-    --bd:#D4D8EF; --bds:#E8EAF6; --bdh:#CDD1EC; --bdd:#C8CCE0;
-    --c0:#0A0A1A; --c1:#1A1A2E; --c2:#3A4060; --c3:#5A6080;
+    --bd:#B8BEDC; --bds:#E8EAF6; --bdh:#CDD1EC; --bdd:#C8CCE0;
+    --c0:#080818; --c1:#1A1A2E; --c2:#3A4060; --c3:#5A6080;
     --c4:#7A82A0; --c5:#9AA0BE; --c6:#B8BECE; --c7:#CDD3E0;
     --cn:#5A6080; --cns:#8090B0;
     --dot:rgba(99,102,241,0.03); --sl:#D4D8EF;
@@ -159,7 +159,97 @@ const MOD={
   signals:{c:"#F5A623",label:"SIGNALS",      sub:"Daily Briefing",     icon:"⚡"},
   engine:{c:"#50D2A0",label:"LAUNCH ENGINE", sub:"Course Scorer",      icon:"▶"},
   catmgr:{c:"#A855F7",label:"CATEGORY MGR",  sub:"AI Strategy Advisor",icon:"◧"},
+  intel:{c:"#06B6D4",label:"AI INTEL",      sub:"Keywords · Tools · Roles",icon:"◎"},
+  world:{c:"#F43F5E",label:"WORLD",          sub:"Leaders · Summits",      icon:"✦"},
 };
+
+const ROLES_AI=[
+  {r:"Front End",    c:"SWE",  impact:"AI-enhanced user experiences",       tools:"GitHub Copilot · LangChain · OpenAI API",    why:"Front-end isn't just UI anymore"},
+  {r:"Back End",     c:"SWE",  impact:"AI-ready APIs & data pipelines",      tools:"TensorFlow.js · OpenAI API · Hugging Face",  why:"Back-end engineers must design AI-ready systems"},
+  {r:"Full Stack",   c:"SWE",  impact:"End-to-end AI-enabled apps",          tools:"React+OpenAI · LangChain · Pinecone",        why:"Full-stack devs expected to ship AI-enabled apps"},
+  {r:"Test Engg",    c:"SWE",  impact:"AI-automated testing at scale",       tools:"Test.AI · Playwright+AI · Selenium+ML",      why:"Manual QA is dying — AI test engineers are future"},
+  {r:"Android",      c:"SWE",  impact:"AI-first adaptive mobile apps",       tools:"TF Lite · Core ML · ML Kit",                 why:"Mobile engineers must ship AI-first features"},
+  {r:"iOS",          c:"SWE",  impact:"Personalized adaptive experiences",   tools:"Core ML · TF Lite · ML Kit",                 why:"Mobile engineers must ship AI-first features"},
+  {r:"Data Scientist",c:"DATA",impact:"Faster insights, AI-driven models",   tools:"PyTorch · Hugging Face · LangChain",         why:"Companies need DSs who can deploy AI-driven insights"},
+  {r:"Data Engineer",c:"DATA", impact:"ETL → AI-first pipelines",            tools:"Spark ML · Databricks+AI · LangChain",       why:"Data engineering shifting from ETL → AI pipelines"},
+  {r:"ML Engineer",  c:"AI",   impact:"Agentic AI at scale in production",   tools:"PyTorch · Hugging Face · LangChain",         why:"Future ML = GenAI + Agentic AI at scale"},
+  {r:"Data Analyst", c:"DATA", impact:"AI-driven forecasting & insights",    tools:"PyTorch · Hugging Face · scikit-learn",      why:"Companies need analysts who deploy AI insights"},
+  {r:"Eng. Manager", c:"MGR",  impact:"AI strategy + execution ownership",   tools:"LLMOps · LangChain · GenAI APIs",            why:"EMs expected to own AI strategy + execution"},
+  {r:"PM",           c:"MGR",  impact:"AI-enabled product development",      tools:"Prompt Eng · LLM APIs · AI Roadmaps",        why:"PMs must build AI products, not manage features"},
+  {r:"TPM",          c:"MGR",  impact:"AI-first program delivery",           tools:"GenAI APIs · Airflow+AI · Workflow Orch.",    why:"TPMs must deliver AI-first programs end-to-end"},
+  {r:"Embedded",     c:"SYS",  impact:"Intelligence at the edge / IoT",      tools:"Edge AI · TF Lite · TinyML",                 why:"Future embedded systems = AI at the edge"},
+  {r:"SRE / DevOps", c:"SYS",  impact:"Self-healing AI-ops automation",      tools:"Kubernetes+AI · Datadog AI · AIOps",         why:"SREs must automate with AI to handle scale"},
+  {r:"AWS Cloud",    c:"SYS",  impact:"AI-optimized cloud infrastructure",   tools:"AWS SageMaker · Bedrock · LangChain",        why:"Cloud without AI = outdated infra"},
+  {r:"Cyber Security",c:"SYS", impact:"AI-powered threat detection & response",tools:"AI SecOps · Darktrace · LangChain Security",why:"AI is the future of cyber defense"},
+];
+const AI_TOOLS_DATA=[
+  {name:"LangChain",      roles:8, cat:"Orchestration",  heat:5},
+  {name:"OpenAI API",     roles:5, cat:"LLM Platform",   heat:5},
+  {name:"Hugging Face",   roles:4, cat:"Models / Hub",   heat:5},
+  {name:"PyTorch",        roles:3, cat:"ML Framework",   heat:4},
+  {name:"TF Lite",        roles:3, cat:"Edge ML",        heat:4},
+  {name:"GitHub Copilot", roles:2, cat:"Code AI",        heat:5},
+  {name:"AWS Bedrock",    roles:2, cat:"Cloud AI",       heat:5},
+  {name:"AWS SageMaker",  roles:2, cat:"Cloud ML",       heat:4},
+  {name:"Core ML",        roles:2, cat:"Apple AI",       heat:3},
+  {name:"Pinecone",       roles:1, cat:"Vector DB",      heat:5},
+  {name:"LLMOps",         roles:1, cat:"MLOps",          heat:5},
+  {name:"TinyML",         roles:1, cat:"Edge AI",        heat:4},
+  {name:"Playwright+AI",  roles:1, cat:"Testing",        heat:4},
+  {name:"Databricks+AI",  roles:1, cat:"Data Platform",  heat:4},
+  {name:"Spark ML",       roles:1, cat:"Big Data ML",    heat:3},
+  {name:"Datadog AI",     roles:1, cat:"Observability",  heat:3},
+  {name:"Darktrace",      roles:1, cat:"AI Security",    heat:3},
+  {name:"Kubernetes+AI",  roles:1, cat:"DevOps AI",      heat:3},
+];
+const AI_KEYWORDS=[
+  {kw:"Agentic AI",        heat:5, cat:"Core"},
+  {kw:"LLM",               heat:5, cat:"Core"},
+  {kw:"AI Agents",         heat:5, cat:"Core"},
+  {kw:"RAG",               heat:5, cat:"Architecture"},
+  {kw:"Multi-agent",       heat:5, cat:"Architecture"},
+  {kw:"AI Orchestration",  heat:5, cat:"Architecture"},
+  {kw:"LangChain",         heat:5, cat:"Framework"},
+  {kw:"Generative AI",     heat:5, cat:"Core"},
+  {kw:"LLMOps",            heat:5, cat:"Operations"},
+  {kw:"Prompt Engineering",heat:4, cat:"Skill"},
+  {kw:"MLOps",             heat:4, cat:"Operations"},
+  {kw:"Fine-tuning",       heat:4, cat:"Skill"},
+  {kw:"Vector Database",   heat:4, cat:"Infrastructure"},
+  {kw:"AI Pipeline",       heat:4, cat:"Architecture"},
+  {kw:"Foundation Models", heat:4, cat:"Core"},
+  {kw:"AI-first",          heat:4, cat:"Mindset"},
+  {kw:"Model Deployment",  heat:4, cat:"Operations"},
+  {kw:"Autonomous AI",     heat:4, cat:"Core"},
+  {kw:"Edge AI",           heat:3, cat:"Infrastructure"},
+  {kw:"AI SecOps",         heat:3, cat:"Security"},
+  {kw:"TinyML",            heat:3, cat:"Edge"},
+  {kw:"AI Copilot",        heat:3, cat:"Product"},
+  {kw:"ReAct",             heat:3, cat:"Framework"},
+  {kw:"MCP",               heat:4, cat:"Protocol"},
+];
+const AI_COMPANIES=[
+  {n:"Google / DeepMind", t:"BIG_TECH",  roles:["ML","SWE","PM"],   hq:"Bengaluru"},
+  {n:"Microsoft",         t:"BIG_TECH",  roles:["SWE","PM","Data"], hq:"Hyderabad"},
+  {n:"Amazon / AWS",      t:"BIG_TECH",  roles:["SWE","Cloud","ML"],hq:"Bengaluru"},
+  {n:"Meta",              t:"BIG_TECH",  roles:["ML","SWE","Data"], hq:"Remote"},
+  {n:"Apple",             t:"BIG_TECH",  roles:["iOS","ML","SWE"],  hq:"Bengaluru"},
+  {n:"Flipkart",          t:"UNICORN",   roles:["ML","Data","SWE"], hq:"Bengaluru"},
+  {n:"Swiggy",            t:"UNICORN",   roles:["Data","ML","SWE"], hq:"Bengaluru"},
+  {n:"Razorpay",          t:"UNICORN",   roles:["SWE","Security"],  hq:"Bengaluru"},
+  {n:"Meesho",            t:"UNICORN",   roles:["ML","Data","SWE"], hq:"Bengaluru"},
+  {n:"Zomato",            t:"UNICORN",   roles:["ML","Data"],       hq:"Gurgaon"},
+  {n:"PhonePe",           t:"UNICORN",   roles:["SWE","Data"],      hq:"Bengaluru"},
+  {n:"Anthropic",         t:"AI_FIRST",  roles:["ML","SWE"],        hq:"US/Remote"},
+  {n:"OpenAI",            t:"AI_FIRST",  roles:["ML","SWE","PM"],   hq:"US/Remote"},
+  {n:"Samsung R&D",       t:"GCC",       roles:["Embedded","SWE"],  hq:"Bengaluru"},
+  {n:"Adobe India",       t:"GCC",       roles:["ML","SWE","PM"],   hq:"Noida"},
+  {n:"SAP Labs",          t:"GCC",       roles:["SWE","Data","PM"], hq:"Bengaluru"},
+  {n:"Walmart Global Tech",t:"GCC",      roles:["ML","Data","SWE"], hq:"Bengaluru"},
+  {n:"Atlassian",         t:"SAAS",      roles:["SWE","PM"],        hq:"Bengaluru"},
+  {n:"Oracle India",      t:"GCC",       roles:["Cloud","Data"],    hq:"Bengaluru"},
+  {n:"PayPal India",      t:"GCC",       roles:["SWE","Data","Security"],hq:"Chennai"},
+];
 const QUICK_IDEAS=["AI Product Manager Bootcamp","AI TPM Certification","AI Solutions Architect","AI Security Engineer","Agentic AI for Data Scientists","AI Engineering Manager","AI Infrastructure Engineer","AI Evaluation Engineer"];
 const TIER_C={"DIRECT":"#FF6B6B","ADJACENT":"#F5A623","GLOBAL":"#6B8FFF","DEFUNCT":"#6B7280"};
 const THREAT_C={"HIGH":"#FF6B6B","MEDIUM":"#F5A623","LOW":"#50D2A0","NONE":"#6B7280"};
@@ -206,6 +296,22 @@ Build Ease: [X]/10
 TOTAL: [X]/50
 VERDICT: LAUNCH NOW / TEST FIRST / WATCH & WAIT / SKIP
 FIRST MOVE: [1 sentence]`,
+
+  leaders:()=>`Search for latest news and public statements from AI leaders in the past 14 days: Sam Altman (OpenAI), Sundar Pichai (Google), Satya Nadella (Microsoft), Jensen Huang (Nvidia), Dario Amodei (Anthropic), Demis Hassabis (DeepMind).
+For each with recent news:
+LEADER: [name + company]
+UPDATE: [what they said/announced, 1-2 sentences]
+SIGNAL: [implication for AI skills demand]
+---
+End: BIGGEST THEME THIS WEEK`,
+  summits:()=>`Search for upcoming AI conferences and summits in 2025-2026. Include India-specific and global events.
+EVENT: [name]
+DATE: [month year]
+WHERE: [city or online]
+FOCUS: [1 sentence]
+IK RELEVANCE: [High/Medium — why relevant for AI career education]
+---
+List 8-10 events including: India AI Summit, Google I/O, Microsoft Build, NeurIPS, World AI Summit.`,
   catmgr:(history,msg)=>{
     const cs=COMP.filter(c=>c.tier!=="DEFUNCT").map(c=>`${c.n}(${c.tier},${c.threat} threat,Rev:${c.rev},Fund:${c.fund},Price:${c.price})`).join("; ");
     const cats=MKT.cats.map(c=>`${c.n}:${c.cagr} CAGR,IK=${c.ik}`).join("; ");
@@ -287,6 +393,7 @@ function SHIFT(){
   const [scanCount,setScanCount]=useState(0);
   const [chatH,setChatH]=useState([]);
   const [chatIn,setChatIn]=useState("");
+  const [intelSub,setIntelSub]=useState("keywords");
   const chatRef=useRef(null);
 
   useEffect(()=>{
@@ -605,6 +712,104 @@ function SHIFT(){
     </div>
   </div>);
 
+
+  /* ── AI INTEL ── */
+  const rIntel=()=>{
+    const subs=["keywords","tools","roles","companies"];
+    const subC={"keywords":"#06B6D4","tools":"#F5A623","roles":"#50D2A0","companies":"#A855F7"};
+    const CO_C={"BIG_TECH":"#6B8FFF","UNICORN":"#F5A623","AI_FIRST":"#FF6B6B","GCC":"#50D2A0","SAAS":"#A855F7"};
+    const heatColor=(h)=>h>=5?"#FF6B6B":h>=4?"#F5A623":"#50D2A0";
+    return(<div>
+      <div style={{display:"flex",gap:7,marginBottom:20,flexWrap:"wrap"}}>
+        {subs.map(s=>{const a=intelSub===s,sc=subC[s];return(<button key={s} onClick={()=>setIntelSub(s)} style={{padding:"6px 16px",background:a?sc+"1A":"var(--b2)",border:`1px solid ${a?sc:"var(--bd)"}`,borderRadius:20,fontSize:11,fontWeight:600,color:a?sc:"var(--c4)",transition:"all 0.15s",fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",letterSpacing:"0.02em"}}>{s}</button>);})}</div>
+      {intelSub==="keywords"&&(<div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontWeight:600,fontSize:12,color:"var(--c3)",marginBottom:14}}>Top AI keywords driving hiring demand and course searches — {AI_KEYWORDS.length} tracked</div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:20}}>
+          {AI_KEYWORDS.sort((a,b)=>b.heat-a.heat).map((k,i)=>{const hc=heatColor(k.heat);return(<div key={i} style={{padding:"7px 14px",background:hc+"12",border:`1px solid ${hc}33`,borderRadius:24,display:"flex",alignItems:"center",gap:7}}>
+            <div style={{display:"flex",gap:2}}>{[1,2,3,4,5].map(n=><div key={n} style={{width:5,height:5,borderRadius:"50%",background:n<=k.heat?hc:"var(--bd)"}}/>)}</div>
+            <span style={{fontSize:12,color:"var(--c0)",fontWeight:500}}>{k.kw}</span>
+            <span style={{fontSize:9,color:hc,fontFamily:"'JetBrains Mono',monospace",background:hc+"1A",padding:"1px 5px",borderRadius:4}}>{k.cat}</span>
+          </div>);})}
+        </div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+          {["Core","Architecture","Framework","Operations","Skill","Infrastructure","Mindset","Security","Edge","Protocol","Product"].map(cat=>{const items=AI_KEYWORDS.filter(k=>k.cat===cat);if(!items.length)return null;const maxHeat=Math.max(...items.map(k=>k.heat));const hc=heatColor(maxHeat);return(<div key={cat} style={{background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:8,padding:"10px 14px",minWidth:100}}>
+            <div style={{fontSize:9,color:hc,fontFamily:"'JetBrains Mono',monospace",fontWeight:600,marginBottom:6,letterSpacing:"0.02em"}}>{cat.toUpperCase()}</div>
+            <div style={{fontSize:12,color:"var(--c0)",fontWeight:500}}>{items.length} terms</div>
+          </div>);})}
+        </div>
+      </div>)}
+      {intelSub==="tools"&&(<div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontWeight:600,fontSize:12,color:"var(--c3)",marginBottom:14}}>AI tools appearing across {ROLES_AI.length} job roles — sorted by adoption</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:9}}>
+          {AI_TOOLS_DATA.sort((a,b)=>b.heat-a.heat||b.roles-a.roles).map((t,i)=>{const hc=heatColor(t.heat);return(<div key={i} style={{background:"var(--b2)",border:`1px solid ${hc}28`,borderRadius:10,padding:"12px 14px",borderTop:`2px solid ${hc}88`}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:8,alignItems:"flex-start"}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontWeight:600,fontSize:13,color:"var(--c0)",lineHeight:1.3}}>{t.name}</div>
+              <span style={{fontSize:9,fontFamily:"'JetBrains Mono',monospace",color:hc,background:hc+"1A",padding:"2px 7px",borderRadius:4,flexShrink:0,marginLeft:6}}>{t.roles} {t.roles===1?"role":"roles"}</span>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:10,color:"var(--c4)"}}>{t.cat}</span>
+              <div style={{display:"flex",gap:2}}>{[1,2,3,4,5].map(n=><div key={n} style={{width:6,height:6,borderRadius:2,background:n<=t.heat?hc:"var(--bd)"}}/>)}</div>
+            </div>
+          </div>);})}
+        </div>
+      </div>)}
+      {intelSub==="roles"&&(<div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontWeight:600,fontSize:12,color:"var(--c3)",marginBottom:14}}>How Agentic AI impacts every tech role — {ROLES_AI.length} roles from IK's course data</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:9}}>
+          {ROLES_AI.map((r,i)=>{const tc=TAG[r.c]||{c:"#A0A8C0",bg:"rgba(160,168,192,0.1)"};return(<div key={i} style={{background:"var(--b2)",border:"1px solid var(--bd)",borderRadius:10,padding:"13px 14px",borderLeft:`3px solid ${tc.c}`}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+              <div style={{fontFamily:"'Inter',sans-serif",fontWeight:600,fontSize:13,color:"var(--c0)"}}>{r.r}</div>
+              <span style={{fontSize:9,fontWeight:600,padding:"2px 7px",borderRadius:4,background:tc.bg,color:tc.c,fontFamily:"'JetBrains Mono',monospace"}}>{r.c}</span>
+            </div>
+            <div style={{fontSize:11,color:"var(--c2)",marginBottom:8,fontStyle:"italic",lineHeight:1.5}}>{r.impact}</div>
+            <div style={{fontSize:10,color:"var(--c4)",lineHeight:1.5,marginBottom:8}}><span style={{color:tc.c,fontWeight:600}}>Tools:</span> {r.tools}</div>
+            <div style={{fontSize:10,color:"var(--c5)",lineHeight:1.4,borderTop:"1px solid var(--bds)",paddingTop:6}}>↗ {r.why}</div>
+          </div>);})}
+        </div>
+      </div>)}
+      {intelSub==="companies"&&(<div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontWeight:600,fontSize:12,color:"var(--c3)",marginBottom:14}}>Top companies hiring AI talent in India — {AI_COMPANIES.length} tracked</div>
+        <div style={{display:"flex",gap:7,marginBottom:14,flexWrap:"wrap"}}>
+          {["ALL","BIG_TECH","UNICORN","AI_FIRST","GCC","SAAS"].map(t=>{const a=compF===t||(!AI_COMPANIES.some(c=>c.t===t)&&t==="ALL");const cc=CO_C[t]||"#F5A623";return(<button key={t} onClick={()=>setCompF(t)} style={{padding:"4px 12px",background:compF===t?cc+"1A":"var(--b2)",border:`1px solid ${compF===t?cc:"var(--bd)"}`,borderRadius:20,fontSize:10,fontWeight:600,color:compF===t?cc:"var(--c4)",fontFamily:"'JetBrains Mono',monospace",transition:"all 0.15s"}}>{t.replace("_"," ")}</button>);})}</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:9}}>
+          {AI_COMPANIES.filter(co=>compF==="ALL"||co.t===compF).map((co,i)=>{const cc=CO_C[co.t]||"#F5A623";return(<div key={i} style={{background:"var(--b2)",border:`1px solid ${cc}22`,borderRadius:10,padding:"12px 14px",borderTop:`2px solid ${cc}66`}}>
+            <div style={{fontFamily:"'Inter',sans-serif",fontWeight:600,fontSize:13,color:"var(--c0)",marginBottom:6}}>{co.n}</div>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
+              <span style={{fontSize:9,fontWeight:600,padding:"2px 7px",borderRadius:4,background:cc+"1A",color:cc,fontFamily:"'JetBrains Mono',monospace"}}>{co.t.replace("_"," ")}</span>
+              <span style={{fontSize:10,color:"var(--c4)"}}>{co.hq}</span>
+            </div>
+            <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{co.roles.map(r=><span key={r} style={{fontSize:9,padding:"2px 6px",background:"var(--b3)",borderRadius:4,color:"var(--c3)",fontFamily:"'JetBrains Mono',monospace"}}>{r}</span>)}</div>
+          </div>);})}
+        </div>
+      </div>)}
+    </div>);
+  };
+
+  /* ── WORLD ── */
+  const rWorld=()=>(<div>
+    <p style={{color:"var(--c3)",fontSize:12.5,lineHeight:1.75,marginBottom:18}}>Live intelligence from AI leaders and upcoming summits. Scan to refresh.</p>
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:0}}>
+      <div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:14,color:"#F43F5E",marginBottom:12,display:"flex",alignItems:"center",gap:8}}>
+          <span>✦</span> AI LEADERS
+        </div>
+        <ScanBtn label="SCAN LEADER UPDATES" onClick={()=>run(PROMPTS.leaders(),"leaders")} isLoading={ld.leaders} color="#F43F5E"/>
+        {ld.leaders&&<LoadBox label="Scanning what AI leaders said this week..."/>}
+        {!ld.leaders&&cache.leaders&&<IBox text={cache.leaders.data} ts={cache.leaders.ts} color="#F43F5E"/>}
+        {!ld.leaders&&!cache.leaders&&<EHint msg="↑  Scan to see what Sam Altman, Sundar Pichai & others said this week"/>}
+      </div>
+      <div>
+        <div style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:14,color:"#F59E0B",marginBottom:12,display:"flex",alignItems:"center",gap:8}}>
+          <span>◎</span> AI SUMMITS
+        </div>
+        <ScanBtn label="SCAN UPCOMING SUMMITS" onClick={()=>run(PROMPTS.summits(),"summits")} isLoading={ld.summits} color="#F59E0B"/>
+        {ld.summits&&<LoadBox label="Scanning upcoming AI conferences and summits..."/>}
+        {!ld.summits&&cache.summits&&<IBox text={cache.summits.data} ts={cache.summits.ts} color="#F59E0B"/>}
+        {!ld.summits&&!cache.summits&&<EHint msg="↑  Scan for upcoming AI summits, Google I/O, NeurIPS, India AI Summit"/>}
+      </div>
+    </div>
+  </div>);
+
   /* ── LAYOUT ── */
   const cm=MOD[tab];
   return(<div style={{display:"flex",flexDirection:"column",height:"100vh",overflow:"hidden"}}>
@@ -646,7 +851,7 @@ function SHIFT(){
       </div>
       {/* MAIN */}
       <div style={{flex:1,overflowY:"auto",padding:tab==="catmgr"?"22px 26px 0":"22px 26px 56px"}}>
-        <div style={{maxWidth:tab==="market"||tab==="rivals"?1000:840,margin:"0 auto"}}>
+        <div style={{maxWidth:tab==="market"||tab==="rivals"||tab==="intel"||tab==="world"?1100:840,margin:"0 auto"}}>
           {tab!=="home"&&(<div style={{marginBottom:18}}>
             <h1 style={{fontFamily:"'Inter',sans-serif",fontWeight:700,fontSize:19,color:cm?.c||"var(--c0)",marginBottom:2,letterSpacing:"-0.01em"}}>{cm?.label}</h1>
             <div style={{fontSize:8,color:"var(--c5)",fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.02em"}}>{cm?.sub}</div>
@@ -658,6 +863,8 @@ function SHIFT(){
           {tab==="signals" &&rSignals()}
           {tab==="engine"  &&rEngine()}
           {tab==="catmgr"  &&rCatMgr()}
+          {tab==="intel"    &&rIntel()}
+          {tab==="world"    &&rWorld()}
         </div>
       </div>
     </div>
